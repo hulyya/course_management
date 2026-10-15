@@ -1,0 +1,16 @@
+
+# Abhängigkeiten von Composer
+/vendor/
+
+# Umgebungsvariablen und geheime Zugangsdaten
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+/logs/
+
+# Betriebssystem-Dateien
+.DS_Store
+Thumbs.db
