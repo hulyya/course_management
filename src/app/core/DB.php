@@ -1,5 +1,5 @@
 <?php
-namespace src\config;
+namespace src\core;
 
 class DB {
     private ?\PDO $connection = null;

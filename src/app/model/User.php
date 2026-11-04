@@ -7,17 +7,17 @@ class User {
     private string $firstname;
     private string $lastname;
     private string $email;
-    private string $password;
+    private string $password_hash;
     private string $role;
     private Company $company;
 
-    function __construct(int $id, bool $state, string $firstname, string $lastname, string $email, string $password, string $role, Company $company) {
+    function __construct(int $id, bool $state, string $firstname, string $lastname, string $email, string $password_hash, string $role, Company $company) {
         $this->id = $id;
         $this->state = $state;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->email = $email;
-        $this->password = $password;
+        $this->password_hash = $password_hash;
         $this->role = $role;
         $this->company = $company;
     }   
@@ -29,7 +29,7 @@ class User {
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
             'email' => $this->email,
-            'password' => $this->password,
+            'password_hash' => $this->password_hash,
             'role' => $this->role,
             'company' => $this->company->toArray()
         ];  
@@ -51,7 +51,7 @@ class User {
         return $this->email;
     }
     public function getPassword(): string {
-        return $this->password;
+        return $this->password_hash;
     }
     public function getRole(): string {
         return $this->role;
@@ -75,8 +75,8 @@ class User {
     public function setEmail(string $email): void {
         $this->email = $email;
     }
-    public function setPassword(string $password): void {
-        $this->password = $password;
+    public function setPassword(string $password_hash): void {
+        $this->password_hash = $password_hash;
     }   
     public function setRole(string $role): void {
         $this->role = $role;

@@ -1,7 +1,7 @@
 <?php
 namespace src\app\repository;
 use src\app\model\Course;
-use src\config\DB;
+use src\core\DB;
 
 class Course_Repository {
     private DB $db;
@@ -36,7 +36,7 @@ class Course_Repository {
                             );
         $courses = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $courses[] = new Course($data['id'], $data['title'], $data['description'], []);
+            $courses[] = new Course($data['id'],  $data['title'], $data['description'], $data['state'], []);
         }
         return $courses;
     }
@@ -88,7 +88,7 @@ class Course_Repository {
         ]);
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($data) {
-            return new Course($data['id'], $data['title'], $data['description'], []);
+            return new Course($data['id'], $data['title'], $data['description'], $data['state'], []);
         }
         return null;
     }

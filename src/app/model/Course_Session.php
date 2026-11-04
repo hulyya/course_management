@@ -8,17 +8,15 @@ class Course_Session {
     private DateTime $date;
     private DateTime $start_time;
     private DateTime $end_time;
-    private int $participants;
     private User $trainer;
     private Location $location;
     private Course $course;
 
-    function __construct(int $id, DateTime $date, DateTime $start_time, DateTime $end_time, int $participants, User $trainer, Location $location, Course $course) {
+    function __construct(int $id, DateTime $date, DateTime $start_time, DateTime $end_time, User $trainer, Location $location, Course $course) {
         $this->id = $id;
         $this->date = $date;
         $this->start_time = $start_time;
         $this->end_time = $end_time;
-        $this->participants = $participants;
         $this->trainer = $trainer;
         $this->location = $location;
         $this->course = $course;
@@ -30,7 +28,6 @@ class Course_Session {
             'date' => $this->date->format('Y-m-d'),
             'start_time' => $this->start_time->format('H:i:s'),
             'end_time' => $this->end_time->format('H:i:s'),
-            'participants' => $this->participants,
             'trainer' => $this->trainer->toArray(),
             'location' => $this->location->toArray(),
             'course' => $this->course->toArray()
@@ -48,9 +45,6 @@ class Course_Session {
     }
     public function getEndTime(): DateTime {
         return $this->end_time;
-    }
-    public function getParticipants(): int {
-        return $this->participants;
     }
     public function getTrainer(): User {
         return $this->trainer;
@@ -73,9 +67,6 @@ class Course_Session {
     }
     public function setEndTime(DateTime $end_time): void {
         $this->end_time = $end_time;
-    }
-    public function setParticipants(int $participants): void {
-        $this->participants = $participants;
     }
     public function setTrainer(User $trainer): void {
         $this->trainer = $trainer;

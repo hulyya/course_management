@@ -5,12 +5,14 @@ class Course{
     private int $id;
     private string $title;
     private string $description;
+    private bool $state;
     private array $course_sessions;
 
-    function __construct(int $id, string $title, string $description, array $course_sessions) {
+    function __construct(int $id, string $title, string $description, bool $state, array $course_sessions) {
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
+        $this->state = $state;
         $this->course_sessions = $course_sessions;
     }
 
@@ -19,6 +21,7 @@ class Course{
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'state' => $this->state,
             'course_sessions' => $this->course_sessions
         ];
     }   
@@ -31,7 +34,10 @@ class Course{
     }
     public function getDescription(): string {
         return $this->description;
-    }    
+    } 
+    public function getState(): bool {
+        return $this->state;
+    }   
     public function getCourseSessions(): array {
         return $this->course_sessions;
     }
@@ -45,6 +51,9 @@ class Course{
     }
     public function setDescription(string $description): void {
         $this->description = $description;
+    }
+    public function setState(bool $state): void {
+        $this->state = $state;
     }
     public function setCourseSessions(array $course_sessions): void {
         $this->course_sessions = $course_sessions;
