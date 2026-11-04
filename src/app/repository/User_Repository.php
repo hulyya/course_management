@@ -150,7 +150,7 @@ class User_Repository{
                             $data['firstname'], 
                             $data['lastname'], 
                             $data['email'], 
-                            null,
+                            $data['password_hash'],
                             $data['role'], 
                             $data['company_id'], 
                         );
