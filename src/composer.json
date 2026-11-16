@@ -2,7 +2,7 @@
     "name": "julia.grobosch/course_management",
     "autoload": {
         "psr-4": {
-            "JuliaGrobosch\\CourseManagement\\": "src\\"
+            "src\\": ""
         }
     },
     "authors": [
