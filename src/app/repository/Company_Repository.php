@@ -1,6 +1,7 @@
 <?php
-namespace src\app\model;
-use src\core\DB;
+namespace src\app\repository;
+use src\app\model\Company;
+use src\app\core\DB;
 
 class Company_Repository {
     private DB $db;
@@ -77,7 +78,50 @@ class Company_Repository {
             ':state' => $company->getState()
         ]);
     }
-    
-
+    /**
+     * Summary of getCompanyById
+     * 
+     */
+    public function getCompanyById(int $id){
+        $pdo =$this->db->getConnection();
+        $stmt = $pdo->prepare(
+                                "SELECT
+                                        id,
+                                        state,
+                                        name,
+                                        contact_person,
+                                        contact_email
+                                FROM companies
+                                WHERE id = :id"
+                            );
+        $stmt->execute([
+            ':id' => $id
+        ]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            return new Company(
+                                (int)$data['id'],
+                                (bool)$data['state'],
+                                $data['name'],
+                                $data['contact_person'],
+                                $data['contact_email']
+            );
+    }
+    return null;
+    }
+    /**
+     * Summary of getAllCompanies
+     */
+    public function getAllCompanies():array{
+        $pdo =$this->db->getConnection();
+        $stmt =$pdo->prepare(
+                                "SELECT
+                                        companies.id,
+                                        companies.name
+                                FROM companies"
+                            );
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
 ?>

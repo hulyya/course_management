@@ -5,26 +5,6 @@ use src\app\model\Course;
 
 class Course_Controller {
     /**
-     * Summary of listAllCourses
-     * lists all Courses from the database
-     */
-    public function listAllCourses(){
-        $courseRepositoryObject = (new Course_Repository())->load();
-        $array =[];
-        foreach ($courseRepositoryObject as $data ){
-            $array [] = $data->toArray();
-        }
-        return $array;
-    }
-    /**
-     * Summary of showCourse
-     * shows a specific Course
-     */
-    public function showCourse(int $id){
-        $courseRepositoryObject = (new Course_Repository())->getCourseById($id);
-        return $courseRepositoryObject;
-    }
-    /**
      * Summary of createCourse()
      * creates one course
      */
@@ -45,16 +25,8 @@ class Course_Controller {
     
         return $formData;
     }
-    /**
-     * Summary of deleteCourse()
-     * deletes a course
-     */
-    public function deleteCourse():bool{
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            return (new Course_Repository())->delete((int) $_POST['delete_id']);
-        }
-        return false;
-    }
+
+
     /**
      * Summary of editCourse()
      * posibility to change Values in a Course
@@ -71,7 +43,44 @@ class Course_Controller {
         return false;
     }
 
+
+
+    /**
+     * Summary of deleteCourse()
+     * deletes a course
+     */
+    public function deleteCourse():bool{
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+            return (new Course_Repository())->delete((int) $_POST['delete_id']);
+        }
+        return false;
+    }
+
+
+
+    /**
+     * Summary of listAllCourses
+     * lists all Courses from the database
+     */
+    public function listAllCourses(){
+        $courseRepositoryObject = (new Course_Repository())->load();
+        $array =[];
+        foreach ($courseRepositoryObject as $data ){
+            $array [] = $data->toArray();
+        }
+        return $array;
+    }
+
+
+
+    /**
+     * Summary of showCourse
+     * shows a specific Course
+     */
+    public function showCourse(int $id){
+        $courseRepositoryObject = (new Course_Repository())->getCourseById($id);
+        $courseArray = $courseRepositoryObject->toArray();
+        return $courseArray;
+    }
 }
-
-
 ?>

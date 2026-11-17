@@ -1,7 +1,7 @@
 <?php
 namespace src\app\repository;
 use src\app\model\Course_Session;   
-use src\core\DB;
+use src\app\core\DB;
 
 class Course_Session_Repository {
     private DB $db;
@@ -19,13 +19,12 @@ class Course_Session_Repository {
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
                                 "INSERT INTO course_sessions 
-                                        (course_id, date,start_time, end_time, location_id, trainer_id) 
+                                        (course_id, start_time, end_time, location_id, trainer_id) 
                                  VALUES 
-                                        (:course_id, :date,:start_time, :end_time, :location_id, :trainer_id)"
+                                        (:course_id, :start_time, :end_time, :location_id, :trainer_id)"
                             );
         return $stmt->execute ([
             ':course_id' => $course_session->getCourse()->getId(),
-            ':date' => $course_session->getDate()->format('Y-m-d'),
             ':start_time' => $course_session->getStartTime()->format('H:i:s'),
             ':end_time' => $course_session->getEndTime()->format('H:i:s'),
             ':location_id' => $course_session->getLocation()->getId(),
@@ -36,15 +35,27 @@ class Course_Session_Repository {
     /**
      * Summary of load
      * @return array<Course_Session> returns an array of course sessions from the database
+     * by course id!
      */
-    public function load(){
+    public function load(int $courseId){
         $pdo = $this->db->getConnection();
-        $stmt = $pdo->query(
-                                "SELECT * FROM course_sessions"
-                            );
+        $stmt = $pdo->prepare(
+            "SELECT * FROM course_sessions WHERE course_id = :course_id"
+        );
+        $stmt->execute([
+            ':course_id' => $courseId
+        ]);
+
         $course_sessions = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $course_sessions[] = new Course_Session($data['id'], $data['date'], $data['start_time'], $data['end_time'], $data['trainer_id'], $data['location_id'], $data['course_id']);
+            $course_sessions[] = new Course_Session(
+                (int) $data['id'],
+                new \DateTime($data['start_time']),
+                new \DateTime($data['end_time']),
+                (new User_Repository())->loadUserbyId((int) $data['trainer_id']),
+                (new Location_Repository())->getLocationById((int) $data['location_id']),
+                (new Course_Repository())->getCourseById((int) $data['course_id'])
+            );
         }
         return $course_sessions;
     }
@@ -57,12 +68,11 @@ class Course_Session_Repository {
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
                                 "UPDATE course_sessions 
-                                 SET date = :date, start_time = :start_time, end_time = :end_time, location_id = :location_id, trainer_id = :trainer_id, course_id = :course_id
+                                 SET start_time = :start_time, end_time = :end_time, location_id = :location_id, trainer_id = :trainer_id, course_id = :course_id
                                  WHERE id = :id"
                             );
         return $stmt->execute([
             ':id' => $course_session->getId(),
-            ':date' => $course_session->getDate(),
             ':start_time' => $course_session->getStartTime(),
             ':end_time' => $course_session->getEndTime(),
             ':location_id' => $course_session->getLocation(),
@@ -101,7 +111,7 @@ class Course_Session_Repository {
         ]);
         $course_sessions = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $course_sessions[] = new Course_Session($data['id'], $data['date'], $data['start_time'], $data['end_time'], $data['trainer_id'], $data['location_id'],  $data['course_id']);
+            $course_sessions[] = new Course_Session($data['id'], $data['start_time'], $data['end_time'], $data['trainer_id'], $data['location_id'],  $data['course_id']);
         }
         return $course_sessions;
     }

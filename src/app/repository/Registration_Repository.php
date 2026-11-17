@@ -1,12 +1,12 @@
 <?php
 namespace src\app\repository;
 use src\app\model\Registration;
-use src\core\DB;
+use src\app\core\DB;
 
 class Registration_Repository{
     private DB $db;
-    function __construct(DB $db) {
-        $this->db = $db;    
+    function __construct() {
+        $this->db = new DB();
     }
     /**
      * Summary of save

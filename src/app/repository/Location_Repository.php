@@ -1,11 +1,11 @@
 <?php
 namespace src\app\repository;
 use src\app\model\Location;
-use src\core\DB;
+use src\app\core\DB;
 class Location_Repository {
     private DB $db;
-    function __construct(DB $db) {
-        $this->db = $db;
+    function __construct() {
+        $this->db = new DB();
     }
 
     /**
@@ -108,7 +108,54 @@ class Location_Repository {
             ':state' => $location->getState()
         ]);
     }
+    /***
+     * Summary of getLocationbyId
+     * gets the location by id
+     */
+    public function getLocationById(int $id){
+        $pdo = $this->db->getConnection();
+        $stmt = $pdo->prepare(
+                                "SELECT id, state, name, street, city, room, capacity
+                                FROM locations
+                                WHERE id = :id"
+                            );
+        $stmt -> execute([
+            ':id'=>$id
+        ]);
+        $data = $stmt ->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            return new Location(
+                                $data['id'],
+                                $data['state'],
+                                $data['name'],
+                                $data['street'],
+                                $data['city'],
+                                $data['room'],
+                                $data['capacity']
+            );
+        }
+        return null;
+    }
+    /**
+     * Summary of getAllLocations
+     * 
+     */
+    public function getAllLocations():array{
+        $pdo = $this->db->getConnection();
+        $stmt = $pdo->prepare(
+                                "SELECT 
+                                        locations.id,
+                                        locations.name,
+                                        locations.room,
+                                        locations.street,
+                                        locations.city,
+                                        locations.capacity
+                                FROM locations
+                            ");
+        $stmt ->execute();
 
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
 
 }

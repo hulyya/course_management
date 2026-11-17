@@ -1,6 +1,6 @@
 <?php
 namespace src\app\repository;
-use src\core\DB;
+use src\app\core\DB;
 use src\app\model\User; 
 class User_Repository{
     private DB $db;
@@ -17,16 +17,26 @@ class User_Repository{
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
                                 "INSERT INTO users 
-                                        (firstname, lastname, email, password_hash, role, company_id) 
+                                        (firstname, 
+                                        lastname, 
+                                        email, 
+                                        password_hash, 
+                                        role_id, 
+                                        company_id) 
                                  VALUES 
-                                        (:firstname, :lastname, :email, :password_hash, :role, :company_id)"
+                                        (:firstname, 
+                                        :lastname, 
+                                        :email, 
+                                        :password_hash, 
+                                        :role_id, 
+                                        :company_id)"
                             );
         return $stmt->execute ([
             ':firstname' => $user->getFirstname(),
             ':lastname' => $user->getLastname(),
             ':email' => $user->getEmail(),
             ':password' => $user->getPassword(),
-            ':role' => $user->getRole(),
+            ':role_id' => $user->getRole(),
             ':company_id' => $user->getCompany()->getId()
         ]);
     
@@ -40,7 +50,7 @@ class User_Repository{
     public function load(int $id){
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
-                                "SELECT id, state, firstname, lastname, email, role, company_id 
+                                "SELECT id, state, firstname, lastname, email, role_id, company_id 
                                 FROM users"
                             );
         $users = [];
@@ -52,7 +62,7 @@ class User_Repository{
                                     $data['lastname'], 
                                     $data['email'], 
                                     null,
-                                    $data['role'], 
+                                    $data['role_id'], 
                                     $data['company_id'],
                                 );
         }
@@ -67,7 +77,12 @@ class User_Repository{
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
                                 "UPDATE users 
-                                 SET state = :state, firstname = :firstname, lastname = :lastname, email = :email, role = :role, company_id = :company_id
+                                 SET    state = :state, 
+                                        firstname = :firstname, 
+                                        lastname = :lastname, 
+                                        email = :email, 
+                                        role_id = :role_id, 
+                                        company_id = :company_id
                                  WHERE id = :id"
                             );
         return $stmt->execute([
@@ -76,7 +91,7 @@ class User_Repository{
             ':firstname' => $user->getFirstname(),
             ':lastname' => $user->getLastname(),
             ':email' => $user->getEmail(),
-            ':role' => $user->getRole(),
+            ':role_id' => $user->getRole(),
             ':company_id' => $user->getCompany()->getId()
         ]);
     }
@@ -105,9 +120,18 @@ class User_Repository{
     public function loadUserById(int $id){
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
-                                "SELECT id, state, firstname, lastname, email, role, company_id 
+                                "SELECT 
+                                    users.id, 
+                                    users.state, 
+                                    users.firstname, 
+                                    users.lastname, 
+                                    users.email, 
+                                    users.password_hash,
+                                    users.company_id,
+                                    roles.name AS role
                                 FROM users
-                                WHERE id = :id"
+                                LEFT JOIN roles ON users.role_id = roles.id
+                                WHERE users.id = :id"
                             );
         $stmt->execute([
             ':id' => $id
@@ -115,14 +139,14 @@ class User_Repository{
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         if($data){
             return new User(
-                            $data['id'], 
-                            $data['state'], 
+                            (int) $data['id'], 
+                            (bool) $data['state'], 
                             $data['firstname'], 
                             $data['lastname'], 
                             $data['email'], 
-                            null,
-                            $data['role'], 
-                            $data['company_id'], 
+                            $data['password_hash'] ?? '', 
+                            $data['role'] ?? 'Unbekannt', 
+                            (new Company_Repository())->getCompanyById((int) $data['company_id'])
                         );
         }
         return null;
@@ -135,7 +159,14 @@ class User_Repository{
     public function loadUserByEmail(string $email){
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
-                                "SELECT id, state, firstname, lastname, email, password_hash, role, company_id 
+                                "SELECT id, 
+                                state, 
+                                firstname, 
+                                lastname, 
+                                email, 
+                                password_hash, 
+                                role_id, 
+                                company_id 
                                 FROM users
                                 WHERE email = :email"
                             );
@@ -151,11 +182,38 @@ class User_Repository{
                             $data['lastname'], 
                             $data['email'], 
                             $data['password_hash'],
-                            $data['role'], 
+                            $data['role_id'], 
                             $data['company_id'], 
                         );
         }
         return null;
+    }
+    /**
+     * Summary of getAllTrainer
+     * to get all trainer from users for dropdown form
+     */
+    public function getAllTrainer():array{
+        $pdo = $this->db->getConnection();
+        $stmt =$pdo ->prepare(
+                                 "SELECT 
+                                        users.id, 
+                                        users.firstname, 
+                                        users.lastname 
+                                FROM users
+                                LEFT JOIN roles ON users.role_id = roles.id
+                                WHERE roles.name = 'trainer'
+                            ");
+    $stmt->execute();
+    
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    /**
+     * Summary of getAllRoles
+     */
+    public function getAllRoles():array{
+        $pdo = $this->db->getConnection();
+        $stmt = $pdo->query("SELECT id, name FROM roles");
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }
