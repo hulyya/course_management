@@ -19,14 +19,14 @@ class User_Controller{
         $roles =$userRepo->getAllRoles();
 
         $formData = [
-            'firstname'     =>'',
-            'lastname'      =>'',
-            'email'         =>'',
-            'password_hash' =>'',
-            'role'          =>'',
-            'company'       =>0,
+            'firstname'     => '',
+            'lastname'      => '',
+            'email'         => '',
+            'password_hash' => '',
+            'role'          => '',
+            'company'       => 0,
             'roles'         => $roles,
-            'companies'     =>$companies
+            'companies'     => $companies
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -61,21 +61,21 @@ class User_Controller{
     /**
      * Summary of editUser
      */
-    public function editUser():array{
+    public function editUser():array{ 
         $companyRepositoryObj= new Company_Repository();
         $companies =$companyRepositoryObj->getAllCompanies();
         $userRepositoryObj = new User_Repository();
         $roles =$userRepositoryObj->getAllRoles();
 
         $formData =[
-            'firstname'     =>'',
-            'lastname'      =>'',
-            'email'         =>'',
-            'password_hash' =>'',
-            'role'          =>'',
-            'company'       =>0,
+            'firstname'     => '',
+            'lastname'      => '',
+            'email'         => '',
+            'password_hash' => '',
+            'role'          => '',
+            'company'       => 0,
             'roles'         => $roles,
-            'companies'     =>$companies
+            'companies'     => $companies
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -138,9 +138,9 @@ class User_Controller{
      */
     public function listAllUsers():array{
         $userRepositoryObj = (new User_Repository())->load();
-        $array =[];
+        $array = [];
         foreach ($userRepositoryObj as $data){
-            $array [] =$data->toArray();
+            $array [] = $data->toArray();
         }
         return $array;
     }

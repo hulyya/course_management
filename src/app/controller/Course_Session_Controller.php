@@ -8,6 +8,7 @@ use src\app\repository\Location_Repository;
 use src\app\repository\User_Repository;
 
 class Course_Session_Controller {
+
     /**
      * Summary of createSession
      * creates a session within a chosen course
@@ -27,17 +28,16 @@ class Course_Session_Controller {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             $start_time = trim($_POST['start_time']??'');
-            $end_time = trim($_POST['end_time']??'');
-            $trainer = ($_POST['trainer']??0);
-            $location= ($_POST['location']??0);
-            $courseId = ($_POST['courseId']??0);
+            $end_time   = trim($_POST['end_time']??'');
+            $trainer    = ($_POST['trainer']??0);
+            $location   = ($_POST['location']??0);
+            $courseId   = ($_POST['courseId']??0);
             
-            $formData['start_time'] =$start_time;
-            $formData['end_time'] =$end_time;
-            $formData['trainer'] = $trainer;
-            $formData['location'] = $location;
+            $formData['start_time'] = $start_time;
+            $formData['end_time']   = $end_time;
+            $formData['trainer']    = $trainer;
+            $formData['location']   = $location;
 
- 
             $id          = 0;
             $startObj    = new \DateTime($start_time);
             $endObj      = new \DateTime($end_time);
@@ -117,9 +117,9 @@ class Course_Session_Controller {
      */
     public function listAllSessions(int $courseId): array{
         $sessionRepositoryObjekt = (new Course_Session_Repository())->load($courseId);
-        $array =[];
+        $array = [];
         foreach ($sessionRepositoryObjekt as $data){
-            $array [] =$data->toArray();    
+            $array [] = $data->toArray();    
         }
         return $array;
     }

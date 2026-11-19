@@ -12,17 +12,17 @@ class Course_Controller {
         $formData = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $title = trim($_POST['title']??'');
-            $description = trim($_POST['description']??'');
+            $title          = trim($_POST['title']??'');
+            $description    = trim($_POST['description']??'');
 
             $formData = [
-                'title' => $title,
-                'description' => $description
-            ];        
-        $course = new Course(0, $title, $description, true, []);
-        return (new Course_Repository())->save($course);
+                'title'         => $title,
+                'description'   => $description
+            ];      
+
+            $course = new Course(0, $title, $description, true, []);
+            return (new Course_Repository())->save($course);
         }
-    
         return $formData;
     }
 
@@ -64,7 +64,7 @@ class Course_Controller {
      */
     public function listAllCourses(){
         $courseRepositoryObject = (new Course_Repository())->load();
-        $array =[];
+        $array = [];
         foreach ($courseRepositoryObject as $data ){
             $array [] = $data->toArray();
         }

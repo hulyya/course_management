@@ -5,16 +5,17 @@ use src\app\model\Location;
 use src\app\repository\Location_Repository;
 
 class Location_Controller{
+
     /**
      * Summary of createLocation
      */
     public function createLocation(){
         $formData = [
-            'name'      =>'',
-            'street'    =>'',
-            'city'      =>'',
-            'room'      =>'',
-            'capacity'  =>'',
+            'name'      => '',
+            'street'    => '',
+            'city'      => '',
+            'room'      => '',
+            'capacity'  => '',
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -44,11 +45,11 @@ class Location_Controller{
      */
     public function editLocation(){
         $formData = [
-            'name'      =>'',
-            'street'    =>'',
-            'city'      =>'',
-            'room'      =>'',
-            'capacity'  =>'',
+            'name'      => '',
+            'street'    => '',
+            'city'      => '',
+            'room'      => '',
+            'capacity'  => '',
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){

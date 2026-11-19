@@ -12,9 +12,9 @@ class Company_Controller{
     public function createCompany(){
 
         $formData = [
-            'name' =>'',
-            'contact_person'=>'',
-            'contact_email'=>''
+            'name'              =>'',
+            'contact_person'    =>'',
+            'contact_email'     =>''
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -40,9 +40,9 @@ class Company_Controller{
      */
     public function editCompany(){
          $formData = [
-            'name' =>'',
-            'contact_person'=>'',
-            'contact_email'=>''
+            'name'              =>'',
+            'contact_person'    =>'',
+            'contact_email'     =>''
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -78,10 +78,10 @@ class Company_Controller{
      */
     public function listAllCompanies(){
         $companyRepositoryObj = (new Company_Repository()->load());
-        $array  = [];
+        $array = [];
 
         foreach ($companyRepositoryObj as $data){
-            $array []   = $data->toArray();
+            $array [] = $data->toArray();
         }
         return $array;
 
