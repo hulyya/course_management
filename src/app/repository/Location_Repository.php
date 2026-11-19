@@ -79,16 +79,16 @@ class Location_Repository {
     /**
      * Summary of delete()
      * deletes a location from the database
-     * @param Location $location
+     * @param int $id
      */
-    public function delete(Location $location): bool {
+    public function delete(int $id): bool {
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
                                 "DELETE FROM locations 
                                 WHERE id = :id"
                             );
         return $stmt->execute([
-            ':id' => $location->getId()
+            ':id' => $id
         ]);
     }
     /**

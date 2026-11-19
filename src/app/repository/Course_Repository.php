@@ -9,6 +9,7 @@ class Course_Repository {
         $this->db = new DB();
     }
 
+
     
     /**
      * Summary of save
@@ -25,6 +26,9 @@ class Course_Repository {
             ':description' => $course->getDescription()
         ]);
     }
+
+
+
     /**
      * Summary of load
      * @return array<Course> returns an array of courses from the database
@@ -36,10 +40,18 @@ class Course_Repository {
                             );
         $courses = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $courses[] = new Course($data['id'],  $data['title'], $data['description'], $data['state'], []);
+            $courses[] = new Course(
+                                        $data['id'],  
+                                        $data['title'], 
+                                        $data['description'], 
+                                        $data['state'], 
+                                        []);
         }
         return $courses;
     }
+
+
+
     /**
      * Summary of delete
      * @param int $id
@@ -55,6 +67,9 @@ class Course_Repository {
             ':id' => $id
         ]);
     }
+
+
+
     /**
      * Summary of update
      * @param Course $course    
@@ -72,6 +87,9 @@ class Course_Repository {
             ':description' => $course->getDescription()
         ]);
     }
+
+
+
     /**
      * Summary of getCourseById
      * @param int $id

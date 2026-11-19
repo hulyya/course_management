@@ -9,6 +9,8 @@ class Course_Session_Repository {
         $this->db = new DB();
     }
 
+
+
     /**
      * Summary of save
      * @param Course_Session $course_session    
@@ -29,9 +31,11 @@ class Course_Session_Repository {
             ':end_time' => $course_session->getEndTime()->format('H:i:s'),
             ':location_id' => $course_session->getLocation()->getId(),
             ':trainer_id' => $course_session->getTrainer()->getId()
-
         ]);
     }
+
+
+
     /**
      * Summary of load
      * @return array<Course_Session> returns an array of course sessions from the database
@@ -59,6 +63,9 @@ class Course_Session_Repository {
         }
         return $course_sessions;
     }
+
+
+
     /**
      * Summary of update()
      * @param Course_Session $course_session
@@ -80,6 +87,9 @@ class Course_Session_Repository {
             ':course_id' => $course_session->getCourse()
         ]);
     }
+
+
+
     /**
      * Summary of delete
      * @param int $id
@@ -95,6 +105,9 @@ class Course_Session_Repository {
             ':id' => $id
         ]);
     }
+
+
+    
     /**
      * Summary of loadAllTrainerSessions
      * @param int $trainer_id

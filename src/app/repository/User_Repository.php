@@ -2,6 +2,7 @@
 namespace src\app\repository;
 use src\app\core\DB;
 use src\app\model\User; 
+use src\app\repository\Company_Repository;
 class User_Repository{
     private DB $db;
     function __construct() {
@@ -17,14 +18,18 @@ class User_Repository{
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
                                 "INSERT INTO users 
-                                        (firstname, 
+                                        (id,
+                                        state,
+                                        firstname, 
                                         lastname, 
                                         email, 
                                         password_hash, 
                                         role_id, 
                                         company_id) 
                                  VALUES 
-                                        (:firstname, 
+                                        (:id,
+                                        :state,
+                                        :firstname, 
                                         :lastname, 
                                         :email, 
                                         :password_hash, 
@@ -32,27 +37,51 @@ class User_Repository{
                                         :company_id)"
                             );
         return $stmt->execute ([
+            ':id'=>$user->getId(),
+            ':state'=>$user->getState(),
             ':firstname' => $user->getFirstname(),
             ':lastname' => $user->getLastname(),
             ':email' => $user->getEmail(),
-            ':password' => $user->getPassword(),
+            ':password_hash' => $user->getPassword(),
             ':role_id' => $user->getRole(),
             ':company_id' => $user->getCompany()->getId()
         ]);
     
     }
+
+
+    /**
+     * Summary of delete
+     * @param int $id
+     * deletes a user from the database 
+     */
+    public function delete(int $id){
+        $pdo =$this->db->getConnection();
+        $stmt =$pdo->prepare(
+                                "DELETE FROM users
+                                WHERE id=:id"
+                            );
+        return $stmt->execute([
+            'id'=>$id
+        ]);
+    }
+
+
+
+
     /**
      * Summary of load
      * loads all users from the database
      * 
      * PROBLEMMMMMM PASSSWORD
      */
-    public function load(int $id){
+    public function load(){
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare(
-                                "SELECT id, state, firstname, lastname, email, role_id, company_id 
+                                "SELECT *
                                 FROM users"
                             );
+        $stmt->execute();
         $users = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $users[] = new User(
@@ -61,9 +90,9 @@ class User_Repository{
                                     $data['firstname'], 
                                     $data['lastname'], 
                                     $data['email'], 
-                                    null,
+                                    '',
                                     $data['role_id'], 
-                                    $data['company_id'],
+                                    (new Company_Repository())->getCompanyById((int) $data['company_id'])
                                 );
         }
         return $users;
@@ -95,6 +124,9 @@ class User_Repository{
             ':company_id' => $user->getCompany()->getId()
         ]);
     }
+
+
+    
     /**
      * Summary of changeState
      * @param User $user
@@ -112,6 +144,9 @@ class User_Repository{
             ':state' => $user->getState()
         ]);
     }
+
+
+
     /**
      * Summary of loadUserById
      * @param int $id   
@@ -151,6 +186,9 @@ class User_Repository{
         }
         return null;
     }
+
+
+
     /**
      * Summary of loasdUserByEmail
      * @param string $email 
@@ -188,6 +226,9 @@ class User_Repository{
         }
         return null;
     }
+
+
+
     /**
      * Summary of getAllTrainer
      * to get all trainer from users for dropdown form
@@ -207,6 +248,9 @@ class User_Repository{
     
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+
+
     /**
      * Summary of getAllRoles
      */

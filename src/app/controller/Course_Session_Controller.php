@@ -69,7 +69,6 @@ class Course_Session_Controller {
         'courseId'   => 0,
         'trainers'   => $trainers,
         'locations'  => $locations,
-        'success'    => false
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
@@ -94,7 +93,7 @@ class Course_Session_Controller {
         $courseObj   = (new Course_Repository())->getCourseById($courseId);
 
         $session = new Course_Session($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
-        $formData['success'] = (new Course_Session_Repository())->update($session);
+        (new Course_Session_Repository())->update($session);
     }
     return $formData;
     }
