@@ -82,5 +82,10 @@ class CourseController {
         $courseArray = $courseRepositoryObject->toArray();
         return $courseArray;
     }
+
+    
+    public function adminSite(){
+        echo "Hello World!";
+    }
 }
 ?>

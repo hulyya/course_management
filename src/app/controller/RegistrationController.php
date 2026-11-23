@@ -9,7 +9,7 @@ class RegistrationController{
      * Summary of createSessionRegistration
      */
     public function createSessionRegistration(){
-
+        
     }
 
 
