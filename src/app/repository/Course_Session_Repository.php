@@ -50,7 +50,7 @@ class Course_Session_Repository {
      * @return array<Course_Session> returns an array of course sessions from the database
      * by course id!
      */
-    public function load(int $courseId){
+    public function load(int $courseId):array{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "SELECT * 
@@ -79,11 +79,29 @@ class Course_Session_Repository {
 
 
     /**
+     * Summary of delete
+     * @param int $id
+     * deletes a course session from the database by id
+     */
+    public function delete(int $id):bool{
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "DELETE FROM course_sessions 
+                                WHERE id = :id"
+                                );
+        return $stmt->execute([
+            ':id' => $id
+        ]);
+    }
+
+
+
+    /**
      * Summary of update()
      * @param Course_Session $course_session
      * updates edits in course session in the database
      */
-    public function update(Course_Session $course_session){
+    public function update(Course_Session $course_session):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE course_sessions 
@@ -109,29 +127,11 @@ class Course_Session_Repository {
 
 
     /**
-     * Summary of delete
-     * @param int $id
-     * deletes a course session from the database by id
-     */
-    public function delete(int $id){
-        $pdo    = $this->db->getConnection();
-        $stmt   = $pdo->prepare(
-                                "DELETE FROM course_sessions 
-                                 WHERE id = :id"
-                                );
-        return $stmt->execute([
-            ':id' => $id
-        ]);
-    }
-
-
-    
-    /**
      * Summary of loadAllTrainerSessions
      * @param int $trainer_id
      * returns an array of course sessions from the database by trainer id
      */
-    public function loadAllTrainerSessions(int $trainer_id){
+    public function loadAllTrainerSessions(int $trainer_id):array{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "SELECT * 
@@ -153,6 +153,38 @@ class Course_Session_Repository {
                 $data['course_id']);
         }
         return $course_sessions;
+    }
+
+
+
+    /**
+     * Summary of getCourseSessionById
+     * 
+     */
+    public funcion getCourseSessionById(int $id){
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "SELECT *
+                                FROM course_sessions
+                                WHERE id = :id"
+                                );
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+        $data =$stmt->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            return new Course_Session(
+                $data['id'],
+                $data['start_time'], 
+                $data['end_time'], 
+                $data['trainer_id'], 
+                $data['location_id'],  
+                $data['course_id']);
+            );
+        }
+        return null;
+
     }
 
 

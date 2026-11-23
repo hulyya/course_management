@@ -15,7 +15,7 @@ class Auth {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $user = $userRepositoryObject->loadUserByEmail($email);
+            $user = $userRepositoryObject->getUserByEmail($email);
 
             if($user && password_verify($password, $user->getPassword())){
                 $_SESSION['user_id'] = $user->getId();

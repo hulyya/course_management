@@ -40,7 +40,7 @@ class Course_Repository {
      * Summary of load
      * @return array<Course> returns an array of courses from the database
      */
-    public function load(){
+    public function load():array{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->query(
                                 "SELECT * 
@@ -67,7 +67,7 @@ class Course_Repository {
      * @param int $id
      * deletes a course from the database by id
      */
-    public function delete(int $id){
+    public function delete(int $id):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "DELETE FROM courses 
@@ -85,7 +85,7 @@ class Course_Repository {
      * @param Course $course    
      * updates a course in the database
      */
-    public function update(Course $course){
+    public function update(Course $course):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE courses 

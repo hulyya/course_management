@@ -41,7 +41,7 @@ class Company_Repository {
      * Summary of load
      * loads all companies from the database
      */
-    public function load(){
+    public function load():array{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "SELECT * 
@@ -69,7 +69,7 @@ class Company_Repository {
      * @param Company $company
      * updates a company in the database
      */
-    public function update(Company $company){
+    public function update(Company $company):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE companies 
@@ -95,7 +95,7 @@ class Company_Repository {
      * @param Company $company
      * changes the state of a company in the database
      */
-    public function changeState(Company $company){
+    public function changeState(Company $company):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE companies 

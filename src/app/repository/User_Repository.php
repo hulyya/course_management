@@ -54,29 +54,10 @@ class User_Repository{
  
 
     /**
-     * Summary of delete
-     * @param int $id
-     * deletes a user from the database 
-     */
-    public function delete(int $id){
-        $pdo    = $this->db->getConnection();
-        $stmt   = $pdo->prepare(
-                                "DELETE FROM users
-                                WHERE id=:id"
-                                );
-
-        return $stmt->execute([
-            'id'=>$id
-        ]);
-    }
-
-
-
-    /**
      * Summary of load
      * loads all users from the database
      */
-    public function load(){
+    public function load():array{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "SELECT *
@@ -103,11 +84,30 @@ class User_Repository{
 
 
     /**
+     * Summary of delete
+     * @param int $id
+     * deletes a user from the database 
+     */
+    public function delete(int $id):bool{
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "DELETE FROM users
+                                WHERE id=:id"
+                                );
+
+        return $stmt->execute([
+            'id'=>$id
+        ]);
+    }
+
+
+
+    /**
      * Summary of update
      * @param User $user
      * updates a user in the database
      */
-    public function update(User $user){
+    public function update(User $user):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE users 
@@ -139,7 +139,7 @@ class User_Repository{
      * @param User $user
      * changes the state of a user in the database
      */
-    public function changeState(User $user){
+    public function changeState(User $user):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE users 
@@ -151,91 +151,6 @@ class User_Repository{
             ':id'       => $user->getId(),
             ':state'    => $user->getState()
         ]);
-    }
-
-
-
-    /**
-     * Summary of loadUserById
-     * @param int $id   
-     * loads a user from the database for session
-     */
-    public function loadUserById(int $id){
-        $pdo    = $this->db->getConnection();
-        $stmt   = $pdo->prepare(
-                                "SELECT 
-                                users.id, 
-                                users.state, 
-                                users.firstname, 
-                                users.lastname, 
-                                users.email, 
-                                users.password_hash,
-                                users.company_id,
-                                roles.name AS role
-                                FROM users
-                                LEFT JOIN roles ON users.role_id = roles.id
-                                WHERE users.id = :id"
-                                );
-
-        $stmt->execute([
-            ':id' => $id
-        ]);
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if($data){
-            return new User(
-                (int) $data['id'], 
-                (bool) $data['state'], 
-                $data['firstname'], 
-                $data['lastname'], 
-                $data['email'], 
-                $data['password_hash'] ?? '', 
-                $data['role'] ?? 'Unbekannt', 
-                (new Company_Repository())->getCompanyById((int) $data['company_id'])
-            );
-        }
-        return null;
-    }
-
-
-
-    /**
-     * Summary of loasdUserByEmail
-     * @param string $email 
-     * loads a user from the database by email for login
-     */
-    public function loadUserByEmail(string $email){
-        $pdo    = $this->db->getConnection();
-        $stmt   = $pdo->prepare(
-                                "SELECT 
-                                id, 
-                                state, 
-                                firstname, 
-                                lastname, 
-                                email, 
-                                password_hash, 
-                                role_id, 
-                                company_id 
-                                FROM users
-                                WHERE email = :email"
-                                );
-
-        $stmt->execute([
-            ':email' => $email
-        ]);
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if($data){
-            return new User(
-                $data['id'], 
-                $data['state'], 
-                $data['firstname'], 
-                $data['lastname'], 
-                $data['email'], 
-                $data['password_hash'],
-                $data['role_id'], 
-                $data['company_id'], 
-            );
-        }
-        return null;
     }
 
 
@@ -275,6 +190,91 @@ class User_Repository{
                             );
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }    
+    
+    
+
+    /**
+     * Summary of getUserByEmail
+     * @param string $email 
+     * loads a user from the database by email for login
+     */
+    public function getUserByEmail(string $email){
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "SELECT 
+                                id, 
+                                state, 
+                                firstname, 
+                                lastname, 
+                                email, 
+                                password_hash, 
+                                role_id, 
+                                company_id 
+                                FROM users
+                                WHERE email = :email"
+                                );
+
+        $stmt->execute([
+            ':email' => $email
+        ]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            return new User(
+                $data['id'], 
+                $data['state'], 
+                $data['firstname'], 
+                $data['lastname'], 
+                $data['email'], 
+                $data['password_hash'],
+                $data['role_id'], 
+                $data['company_id'], 
+            );
+        }
+        return null;
+    }
+    
+
+
+    /**
+     * Summary of getUserById
+     * @param int $id   
+     * loads a user from the database for session
+     */
+    public function getUserById(int $id){
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "SELECT 
+                                users.id, 
+                                users.state, 
+                                users.firstname, 
+                                users.lastname, 
+                                users.email, 
+                                users.password_hash,
+                                users.company_id,
+                                roles.name AS role
+                                FROM users
+                                LEFT JOIN roles ON users.role_id = roles.id
+                                WHERE users.id = :id"
+                                );
+
+        $stmt->execute([
+            ':id' => $id
+        ]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if($data){
+            return new User(
+                (int) $data['id'], 
+                (bool) $data['state'], 
+                $data['firstname'], 
+                $data['lastname'], 
+                $data['email'], 
+                $data['password_hash'] ?? '', 
+                $data['role'] ?? 'Unbekannt', 
+                (new Company_Repository())->getCompanyById((int) $data['company_id'])
+            );
+        }
+        return null;
     }
 }
 ?>

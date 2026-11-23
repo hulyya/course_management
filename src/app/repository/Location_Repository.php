@@ -80,6 +80,24 @@ class Location_Repository {
 
 
     /**
+     * Summary of delete()
+     * deletes a location from the database
+     * @param int $id
+     */
+    public function delete(int $id): bool {
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "DELETE FROM locations 
+                                WHERE id = :id"
+                                );
+        return $stmt->execute([
+            ':id' => $id
+        ]);
+    }
+
+
+
+    /**
      * Summary of update()
      * updates a location in the database
      * @param Location $location
@@ -111,24 +129,6 @@ class Location_Repository {
 
 
     /**
-     * Summary of delete()
-     * deletes a location from the database
-     * @param int $id
-     */
-    public function delete(int $id): bool {
-        $pdo    = $this->db->getConnection();
-        $stmt   = $pdo->prepare(
-                                "DELETE FROM locations 
-                                WHERE id = :id"
-                                );
-        return $stmt->execute([
-            ':id' => $id
-        ]);
-    }
-
-
-
-    /**
      * Summary of changeState()
      * changes the state of a location in the database
      * @param Location $location
@@ -148,6 +148,29 @@ class Location_Repository {
 
 
 
+    /**
+     * Summary of getAllLocations
+     * 
+     */
+    public function getAllLocations():array{
+        $pdo    = $this->db->getConnection();
+        $stmt   = $pdo->prepare(
+                                "SELECT 
+                                locations.id,
+                                locations.name,
+                                locations.room,
+                                locations.street,
+                                locations.city,
+                                locations.capacity
+                                FROM locations"
+                                );
+
+        $stmt ->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    
+    
     /***
      * Summary of getLocationbyId
      * gets the location by id
@@ -183,29 +206,6 @@ class Location_Repository {
             );
         }
         return null;
-    }
-
-
-
-    /**
-     * Summary of getAllLocations
-     * 
-     */
-    public function getAllLocations():array{
-        $pdo    = $this->db->getConnection();
-        $stmt   = $pdo->prepare(
-                                "SELECT 
-                                locations.id,
-                                locations.name,
-                                locations.room,
-                                locations.street,
-                                locations.city,
-                                locations.capacity
-                                FROM locations"
-                                );
-
-        $stmt ->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 ?>

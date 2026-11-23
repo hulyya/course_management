@@ -41,7 +41,7 @@ class Course_Session_Controller {
             $id          = 0;
             $startObj    = new \DateTime($start_time);
             $endObj      = new \DateTime($end_time);
-            $trainerObj  = (new User_Repository())->loadUserById($trainer);
+            $trainerObj  = (new User_Repository())->getUserById($trainer);
             $locationObj = (new Location_Repository())->getLocationById($location);
             $courseObj   = (new Course_Repository())->getCourseById($courseId);
 
@@ -88,7 +88,7 @@ class Course_Session_Controller {
 
         $startObj    = new \DateTime($start_time);
         $endObj      = new \DateTime($end_time);
-        $trainerObj  = (new User_Repository())->loadUserById($trainer);
+        $trainerObj  = (new User_Repository())->getUserById($trainer);
         $locationObj = (new Location_Repository())->getLocationById($location);
         $courseObj   = (new Course_Repository())->getCourseById($courseId);
 
@@ -139,8 +139,13 @@ class Course_Session_Controller {
      * Summary of listAllTrainerSessions
      * shows all sessions from on trainer
      */
-    public function listAllTrainerSessions(){
-
+    public function listAllTrainerSessions(int $trainerId){
+        $sessionRepositoryObj = (new Course_Session_Repository())->loadAllTrainerSessions($trainerId);
+        $array = [];
+        foreach ($sessionRepositoryObj as $data){
+            $array [] = $data->toArray();
+        }
+        return $array;
     }
 
 
