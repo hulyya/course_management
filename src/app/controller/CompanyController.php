@@ -2,9 +2,9 @@
 namespace src\app\controller;
 
 use src\app\model\Company;
-use src\app\repository\Company_Repository;
+use src\app\repository\CompanyRepository;
 
-class Company_Controller{
+class CompanyController{
     /**
      * Summary of createCompany
      * create a new Company
@@ -27,7 +27,7 @@ class Company_Controller{
             $formData['contact_email']  =   $contact_email;
 
             $company = new Company(0, true, $name, $contact_person, $contact_email);
-            (new Company_Repository())->save($company);
+            (new CompanyRepository())->save($company);
             return $formData;
         }
         return $formData;
@@ -56,7 +56,7 @@ class Company_Controller{
             $formData['contact_email']  =   $contact_email;
 
             $company = new Company($id, true, $name, $contact_person, $contact_email);
-            (new Company_Repository())->update($company);
+            (new CompanyRepository())->update($company);
             return $formData;
         }
         return $formData;
@@ -77,7 +77,7 @@ class Company_Controller{
      * Summary of listAllCompanies
      */
     public function listAllCompanies(){
-        $companyRepositoryObj = (new Company_Repository()->load());
+        $companyRepositoryObj = (new CompanyRepository()->load());
         $array = [];
 
         foreach ($companyRepositoryObj as $data){

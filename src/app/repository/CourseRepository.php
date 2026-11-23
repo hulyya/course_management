@@ -3,7 +3,7 @@ namespace src\app\repository;
 use src\app\model\Course;
 use src\app\core\DB;
 
-class Course_Repository {
+class CourseRepository {
     private DB $db;
     function __construct() {
         $this->db = new DB();

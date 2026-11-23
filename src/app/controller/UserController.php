@@ -2,18 +2,18 @@
 namespace src\app\controller;
 
 use src\app\model\User;
-use src\app\repository\Company_Repository;
-use src\app\repository\User_Repository;
+use src\app\repository\CompanyRepository;
+use src\app\repository\UserRepository;
 
-class User_Controller{
+class UserController{
 
     /**
      * Summary of createUser
      * create a new user 
      */
     public function createUser():array{
-        $companyRepo = new Company_Repository();
-        $userRepo = new User_Repository();
+        $companyRepo = new CompanyRepository();
+        $userRepo = new UserRepository();
 
         $companies = $companyRepo->getAllCompanies();
         $roles =$userRepo->getAllRoles();
@@ -49,7 +49,7 @@ class User_Controller{
                 $companyObj   = $companyRepo->getCompanyById($companyId);
 
                 $user = new User(0, true, $firstname, $lastname, $email, $passwordHash, $role, $companyObj);
-                (new User_Repository())->save($user);
+                (new UserRepository())->save($user);
                 return $formData;
             }
         }
@@ -62,9 +62,9 @@ class User_Controller{
      * Summary of editUser
      */
     public function editUser():array{ 
-        $companyRepositoryObj= new Company_Repository();
+        $companyRepositoryObj= new CompanyRepository();
         $companies =$companyRepositoryObj->getAllCompanies();
-        $userRepositoryObj = new User_Repository();
+        $userRepositoryObj = new UserRepository();
         $roles =$userRepositoryObj->getAllRoles();
 
         $formData =[
@@ -99,7 +99,7 @@ class User_Controller{
                 $companyObj     = $companyRepositoryObj->getCompanyById($companyId);
 
                 $user = new User($id, true, $firstname, $lastname, $email, $passwordHash, $role, $companyObj);
-                (new User_Repository())->update($user);
+                (new UserRepository())->update($user);
                 return $formData;
             }
         }
@@ -116,7 +116,7 @@ class User_Controller{
      */
     public function deleteUser(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            return (new User_Repository())->delete((int) $_POST['delete_id']);
+            return (new UserRepository())->delete((int) $_POST['delete_id']);
         }
         return false;
     }
@@ -137,7 +137,7 @@ class User_Controller{
      * Summary of listAllUsers
      */
     public function listAllUsers():array{
-        $userRepositoryObj = (new User_Repository())->load();
+        $userRepositoryObj = (new UserRepository())->load();
         $array = [];
         foreach ($userRepositoryObj as $data){
             $array [] = $data->toArray();

@@ -1,9 +1,9 @@
 <?php
 namespace src\app\controller;
-use src\app\repository\Course_Repository;
+use src\app\repository\CourseRepository;
 use src\app\model\Course;
 
-class Course_Controller {
+class CourseController {
     /**
      * Summary of createCourse()
      * creates one course
@@ -21,7 +21,7 @@ class Course_Controller {
             ];      
 
             $course = new Course(0, $title, $description, true, []);
-            return (new Course_Repository())->save($course);
+            return (new CourseRepository())->save($course);
         }
         return $formData;
     }
@@ -38,7 +38,7 @@ class Course_Controller {
             $description = trim($_POST['description'] ?? '');
 
             $course = new Course($id, $title, $description, true, []);
-            return (new Course_Repository())->update($course);
+            return (new CourseRepository())->update($course);
         }
         return false;
     }
@@ -51,7 +51,7 @@ class Course_Controller {
      */
     public function deleteCourse():bool{
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            return (new Course_Repository())->delete((int) $_POST['delete_id']);
+            return (new CourseRepository())->delete((int) $_POST['delete_id']);
         }
         return false;
     }
@@ -63,7 +63,7 @@ class Course_Controller {
      * lists all Courses from the database
      */
     public function listAllCourses(){
-        $courseRepositoryObject = (new Course_Repository())->load();
+        $courseRepositoryObject = (new CourseRepository())->load();
         $array = [];
         foreach ($courseRepositoryObject as $data ){
             $array [] = $data->toArray();
@@ -78,7 +78,7 @@ class Course_Controller {
      * shows a specific Course
      */
     public function showCourse(int $id){
-        $courseRepositoryObject = (new Course_Repository())->getCourseById($id);
+        $courseRepositoryObject = (new CourseRepository())->getCourseById($id);
         $courseArray = $courseRepositoryObject->toArray();
         return $courseArray;
     }

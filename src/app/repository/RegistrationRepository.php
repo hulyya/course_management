@@ -3,7 +3,7 @@ namespace src\app\repository;
 use src\app\model\Registration;
 use src\app\core\DB;
 
-class Registration_Repository{
+class RegistrationRepository{
     private DB $db;
     function __construct() {
         $this->db = new DB();

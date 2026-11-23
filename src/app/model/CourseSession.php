@@ -3,7 +3,7 @@ namespace src\app\model;
 
 use DateTime;
 
-class Course_Session {
+class CourseSession {
     private int $id;
     private DateTime $start_time;
     private DateTime $end_time;

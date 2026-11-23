@@ -2,7 +2,7 @@
 namespace src\app\repository;
 use src\app\model\Location;
 use src\app\core\DB;
-class Location_Repository {
+class LocationRepository {
     private DB $db;
     function __construct() {
         $this->db = new DB();

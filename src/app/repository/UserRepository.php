@@ -2,8 +2,8 @@
 namespace src\app\repository;
 use src\app\core\DB;
 use src\app\model\User; 
-use src\app\repository\Company_Repository;
-class User_Repository{
+use src\app\repository\CompanyRepository;
+class UserRepository{
     private DB $db;
     function __construct() {
         $this->db = new DB();
@@ -75,7 +75,7 @@ class User_Repository{
                 $data['email'], 
                 '',
                 $data['role_id'], 
-                (new Company_Repository())->getCompanyById((int) $data['company_id'])
+                (new CompanyRepository())->getCompanyById((int) $data['company_id'])
             );
         }
         return $users;
@@ -271,7 +271,7 @@ class User_Repository{
                 $data['email'], 
                 $data['password_hash'] ?? '', 
                 $data['role'] ?? 'Unbekannt', 
-                (new Company_Repository())->getCompanyById((int) $data['company_id'])
+                (new CompanyRepository())->getCompanyById((int) $data['company_id'])
             );
         }
         return null;

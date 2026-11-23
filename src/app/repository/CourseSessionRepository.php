@@ -1,9 +1,9 @@
 <?php
 namespace src\app\repository;
-use src\app\model\Course_Session;   
+use src\app\model\CourseSession;   
 use src\app\core\DB;
 
-class Course_Session_Repository {
+class CourseSessionRepository {
     private DB $db;
     function __construct() {
         $this->db = new DB();
@@ -13,11 +13,11 @@ class Course_Session_Repository {
 
     /**
      * Summary of save
-     * @param Course_Session $course_session    
+     * @param CourseSession $courseSession    
      * saves a course session to the database
      * 
      */
-    public function save(Course_Session $course_session){
+    public function save(CourseSession $courseSession){
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "INSERT INTO course_sessions 
@@ -35,11 +35,11 @@ class Course_Session_Repository {
                                 );
 
         return $stmt->execute ([
-            ':course_id'    => $course_session->getCourse()->getId(),
-            ':start_time'   => $course_session->getStartTime()->format('H:i:s'),
-            ':end_time'     => $course_session->getEndTime()->format('H:i:s'),
-            ':location_id'  => $course_session->getLocation()->getId(),
-            ':trainer_id'   => $course_session->getTrainer()->getId()
+            ':course_id'    => $courseSession->getCourse()->getId(),
+            ':start_time'   => $courseSession->getStartTime()->format('H:i:s'),
+            ':end_time'     => $courseSession->getEndTime()->format('H:i:s'),
+            ':location_id'  => $courseSession->getLocation()->getId(),
+            ':trainer_id'   => $courseSession->getTrainer()->getId()
         ]);
     }
 
@@ -47,7 +47,7 @@ class Course_Session_Repository {
 
     /**
      * Summary of load
-     * @return array<Course_Session> returns an array of course sessions from the database
+     * @return array<CourseSession> returns an array of course sessions from the database
      * by course id!
      */
     public function load(int $courseId):array{
@@ -64,13 +64,13 @@ class Course_Session_Repository {
 
         $course_sessions = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $course_sessions[] = new Course_Session(
+            $course_sessions[] = new CourseSession(
                 (int) $data['id'],
                 new \DateTime($data['start_time']),
                 new \DateTime($data['end_time']),
-                (new User_Repository())->loadUserbyId((int) $data['trainer_id']),
-                (new Location_Repository())->getLocationById((int) $data['location_id']),
-                (new Course_Repository())->getCourseById((int) $data['course_id'])
+                (new UserRepository())->getUserbyId((int) $data['trainer_id']),
+                (new LocationRepository())->getLocationById((int) $data['location_id']),
+                (new CourseRepository())->getCourseById((int) $data['course_id'])
             );
         }
         return $course_sessions;
@@ -98,10 +98,10 @@ class Course_Session_Repository {
 
     /**
      * Summary of update()
-     * @param Course_Session $course_session
+     * @param CourseSession $courseSession
      * updates edits in course session in the database
      */
-    public function update(Course_Session $course_session):bool{
+    public function update(CourseSession $courseSession):bool{
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "UPDATE course_sessions 
@@ -115,12 +115,12 @@ class Course_Session_Repository {
                                 );
 
         return $stmt->execute([
-            ':id'           => $course_session->getId(),
-            ':start_time'   => $course_session->getStartTime(),
-            ':end_time'     => $course_session->getEndTime(),
-            ':location_id'  => $course_session->getLocation(),
-            ':trainer_id'   => $course_session->getTrainer(),
-            ':course_id'    => $course_session->getCourse()
+            ':id'           => $courseSession->getId(),
+            ':start_time'   => $courseSession->getStartTime(),
+            ':end_time'     => $courseSession->getEndTime(),
+            ':location_id'  => $courseSession->getLocation(),
+            ':trainer_id'   => $courseSession->getTrainer(),
+            ':course_id'    => $courseSession->getCourse()
         ]);
     }
 
@@ -144,7 +144,7 @@ class Course_Session_Repository {
         ]);
         $course_sessions = [];
         while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $course_sessions[] = new Course_Session(
+            $course_sessions[] = new CourseSession(
                 $data['id'], 
                 $data['start_time'], 
                 $data['end_time'], 
@@ -161,7 +161,7 @@ class Course_Session_Repository {
      * Summary of getCourseSessionById
      * 
      */
-    public funcion getCourseSessionById(int $id){
+    public function getCourseSessionById(int $id){
         $pdo    = $this->db->getConnection();
         $stmt   = $pdo->prepare(
                                 "SELECT *
@@ -174,13 +174,14 @@ class Course_Session_Repository {
         ]);
         $data =$stmt->fetch(\PDO::FETCH_ASSOC);
         if($data){
-            return new Course_Session(
+            return new CourseSession(
                 $data['id'],
                 $data['start_time'], 
                 $data['end_time'], 
                 $data['trainer_id'], 
                 $data['location_id'],  
-                $data['course_id']);
+                $data['course_id']
+                
             );
         }
         return null;

@@ -1,21 +1,21 @@
 <?php
 namespace src\app\controller;
 use DateTime;
-use src\app\repository\Course_Session_Repository;
-use src\app\repository\Course_Repository;
-use src\app\model\Course_Session;
-use src\app\repository\Location_Repository;
-use src\app\repository\User_Repository;
+use src\app\repository\CourseSessionRepository;
+use src\app\repository\CourseRepository;
+use src\app\model\CourseSession;
+use src\app\repository\LocationRepository;
+use src\app\repository\UserRepository;
 
-class Course_Session_Controller {
+class CourseSessionController {
 
     /**
      * Summary of createSession
      * creates a session within a chosen course
      */
     public function createSession(){
-        $trainers = (new User_Repository())->getAllTrainer();
-        $locations = (new Location_Repository())->getAllLocations();
+        $trainers = (new UserRepository())->getAllTrainer();
+        $locations = (new LocationRepository())->getAllLocations();
         
          $formData = [
             'start_time' => '',
@@ -41,12 +41,12 @@ class Course_Session_Controller {
             $id          = 0;
             $startObj    = new \DateTime($start_time);
             $endObj      = new \DateTime($end_time);
-            $trainerObj  = (new User_Repository())->getUserById($trainer);
-            $locationObj = (new Location_Repository())->getLocationById($location);
-            $courseObj   = (new Course_Repository())->getCourseById($courseId);
+            $trainerObj  = (new UserRepository())->getUserById($trainer);
+            $locationObj = (new LocationRepository())->getLocationById($location);
+            $courseObj   = (new CourseRepository())->getCourseById($courseId);
 
-            $session = new Course_Session($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
-            (new Course_Session_Repository())->save($session);
+            $session = new CourseSession($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
+            (new CourseSessionRepository())->save($session);
         }
         return $formData;
     }
@@ -57,8 +57,8 @@ class Course_Session_Controller {
      * Summmary of editSession
      */
     public function editSession(): array {
-    $trainers  = (new User_Repository())->getAllTrainer();
-    $locations = (new Location_Repository())->getAllLocations();
+    $trainers  = (new UserRepository())->getAllTrainer();
+    $locations = (new LocationRepository())->getAllLocations();
 
     $formData = [
         'id'         => 0,
@@ -88,12 +88,12 @@ class Course_Session_Controller {
 
         $startObj    = new \DateTime($start_time);
         $endObj      = new \DateTime($end_time);
-        $trainerObj  = (new User_Repository())->getUserById($trainer);
-        $locationObj = (new Location_Repository())->getLocationById($location);
-        $courseObj   = (new Course_Repository())->getCourseById($courseId);
+        $trainerObj  = (new UserRepository())->getUserById($trainer);
+        $locationObj = (new LocationRepository())->getLocationById($location);
+        $courseObj   = (new CourseRepository())->getCourseById($courseId);
 
-        $session = new Course_Session($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
-        (new Course_Session_Repository())->update($session);
+        $session = new CourseSession($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
+        (new CourseSessionRepository())->update($session);
     }
     return $formData;
     }
@@ -105,7 +105,7 @@ class Course_Session_Controller {
      */
     public function deleteSession(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            return (new Course_Session_Repository())->delete((int) $_POST['delete_id']);
+            return (new CourseSessionRepository())->delete((int) $_POST['delete_id']);
         }
         return false;
     }
@@ -116,7 +116,7 @@ class Course_Session_Controller {
      * Summary of listAllSessions
      */
     public function listAllSessions(int $courseId): array{
-        $sessionRepositoryObjekt = (new Course_Session_Repository())->load($courseId);
+        $sessionRepositoryObjekt = (new CourseSessionRepository())->load($courseId);
         $array = [];
         foreach ($sessionRepositoryObjekt as $data){
             $array [] = $data->toArray();    
@@ -140,7 +140,7 @@ class Course_Session_Controller {
      * shows all sessions from on trainer
      */
     public function listAllTrainerSessions(int $trainerId){
-        $sessionRepositoryObj = (new Course_Session_Repository())->loadAllTrainerSessions($trainerId);
+        $sessionRepositoryObj = (new CourseSessionRepository())->loadAllTrainerSessions($trainerId);
         $array = [];
         foreach ($sessionRepositoryObj as $data){
             $array [] = $data->toArray();

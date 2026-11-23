@@ -11,5 +11,7 @@
             "email": "Julia.Grobosch@ausbildung.diakonie-am-campus.de"
         }
     ],
-    "require": {}
+    "require": {
+        "symfony/routing": "^7.4"
+    }
 }

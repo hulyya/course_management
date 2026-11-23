@@ -2,9 +2,9 @@
 namespace src\app\controller;
 
 use src\app\model\Registration;
-use src\app\repository\Registration_Repository;
+use src\app\repository\RegistrationRepository;
 
-class Registration_Controller{
+class RegistrationController{
     /**
      * Summary of createSessionRegistration
      */

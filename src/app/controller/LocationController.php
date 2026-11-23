@@ -2,9 +2,9 @@
 namespace src\app\controller;
 
 use src\app\model\Location;
-use src\app\repository\Location_Repository;
+use src\app\repository\LocationRepository;
 
-class Location_Controller{
+class LocationController{
 
     /**
      * Summary of createLocation
@@ -32,7 +32,7 @@ class Location_Controller{
             $formData['capacity']   = $capacity;
 
             $location = new Location(0, true, $name, $street, $city, $room, $capacity);
-            (new Location_Repository())->save($location);
+            (new LocationRepository())->save($location);
             return $formData;
         }
         return $formData;
@@ -67,7 +67,7 @@ class Location_Controller{
             $formData['capacity']   = $capacity;
 
             $location = new Location($id, true, $name, $street, $city, $room, $capacity);
-            (new Location_Repository())->update($location);
+            (new LocationRepository())->update($location);
             return $formData;
         }
         return $formData;
@@ -80,7 +80,7 @@ class Location_Controller{
      */
     public function deleteLocation(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])){
-            return (new Location_Repository())->delete((int) $_POST['delete_id']);
+            return (new LocationRepository())->delete((int) $_POST['delete_id']);
         }
         return false;
     }
@@ -101,7 +101,7 @@ class Location_Controller{
      * Summary of listAllLocations
      */
     public function listAllLocations(){
-        $locationRepositoryObj = (new Location_Repository())->load();
+        $locationRepositoryObj = (new LocationRepository())->load();
         $array = [];
         foreach ($locationRepositoryObj as $data){
             $array [] = $data->toArray();
