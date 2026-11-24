@@ -1,47 +1,44 @@
 <?php
 namespace src\app\core;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use src\app\repository\UserRepository;
 use src\app\view\auth\Login;
 
 class Auth {
-    /**
-     * Summary of login
-     * user login function
-     */
-    public static function login(){
+    public static function login(Request $request): Response{
         $userRepositoryObject = new UserRepository();
         $view = new Login();
+        $error = null;
 
-        if($_SERVER['REQUEST_METHOD']==='POST'){
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email', '');
+            $password = $request->request->get('password', '');
 
             $user = $userRepositoryObject->getUserByEmail($email);
 
-            if($user && password_verify($password, $user->getPassword())){
-                $_SESSION['user_id'] = $user->getId();
+            if ($user && password_verify($password, $user->getPassword())) {
+                $session = $request->getSession();
+                $session->migrate(true);
+                $session->set('user_id', $user->getId());
                 
-                session_regenerate_id(true);
-                header('Location: /course_management/public/index.php/admin');
-                exit;
-
-            } else {
-                // ERROR
+                return new RedirectResponse('/course_management/public/index.php/admin');
             }
+            $error = 'E-Mail oder Passwort ist falsch.';
         }
-        return $view->render();
+        return new Response($view->render(['error' => $error]), Response::HTTP_OK);
+    }
+   
+    public static function logout(Request $request): RedirectResponse{
+        $request->getSession()->invalidate();
+
+        return new RedirectResponse('/course_management/public/index.php/login');
     }
     /**
-     * Summary of logout 
-     * user ends the session
+     *  check which user is logged in
      */
-    public static function logout(){
-        $_SESSION = [];
-        session_destroy();
-        header('Location: index.php/login');
-        exit(); /// ????? exit()
-    }
 }
 
 ?>

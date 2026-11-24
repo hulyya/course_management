@@ -57,45 +57,45 @@ class CourseSessionController {
      * Summmary of editSession
      */
     public function editSession(): array {
-    $trainers  = (new UserRepository())->getAllTrainer();
-    $locations = (new LocationRepository())->getAllLocations();
+        $trainers  = (new UserRepository())->getAllTrainer();
+        $locations = (new LocationRepository())->getAllLocations();
 
-    $formData = [
-        'id'         => 0,
-        'start_time' => '',
-        'end_time'   => '',
-        'trainer'    => 0,
-        'location'   => 0,
-        'courseId'   => 0,
-        'trainers'   => $trainers,
-        'locations'  => $locations,
-    ];
+        $formData = [
+            'id'         => 0,
+            'start_time' => '',
+            'end_time'   => '',
+            'trainer'    => 0,
+            'location'   => 0,
+            'courseId'   => 0,
+            'trainers'   => $trainers,
+            'locations'  => $locations,
+        ];
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
-        $id         = (int) $_POST['edit_id'];
-        $start_time = trim($_POST['start_time'] ?? '');
-        $end_time   = trim($_POST['end_time'] ?? '');
-        $trainer    = (int) ($_POST['trainer'] ?? 0);
-        $location   = (int) ($_POST['location'] ?? 0);
-        $courseId   = (int) ($_POST['courseId'] ?? 0);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
+            $id         = (int) $_POST['edit_id'];
+            $start_time = trim($_POST['start_time'] ?? '');
+            $end_time   = trim($_POST['end_time'] ?? '');
+            $trainer    = (int) ($_POST['trainer'] ?? 0);
+            $location   = (int) ($_POST['location'] ?? 0);
+            $courseId   = (int) ($_POST['courseId'] ?? 0);
 
-        $formData['id']         = $id;
-        $formData['start_time'] = $start_time;
-        $formData['end_time']   = $end_time;
-        $formData['trainer']    = $trainer;
-        $formData['location']   = $location;
-        $formData['courseId']   = $courseId;
+            $formData['id']         = $id;
+            $formData['start_time'] = $start_time;
+            $formData['end_time']   = $end_time;
+            $formData['trainer']    = $trainer;
+            $formData['location']   = $location;
+            $formData['courseId']   = $courseId;
 
-        $startObj    = new \DateTime($start_time);
-        $endObj      = new \DateTime($end_time);
-        $trainerObj  = (new UserRepository())->getUserById($trainer);
-        $locationObj = (new LocationRepository())->getLocationById($location);
-        $courseObj   = (new CourseRepository())->getCourseById($courseId);
+            $startObj    = new \DateTime($start_time);
+            $endObj      = new \DateTime($end_time);
+            $trainerObj  = (new UserRepository())->getUserById($trainer);
+            $locationObj = (new LocationRepository())->getLocationById($location);
+            $courseObj   = (new CourseRepository())->getCourseById($courseId);
 
-        $session = new CourseSession($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
-        (new CourseSessionRepository())->update($session);
-    }
-    return $formData;
+            $session = new CourseSession($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
+            (new CourseSessionRepository())->update($session);
+        }
+        return $formData;
     }
 
 
