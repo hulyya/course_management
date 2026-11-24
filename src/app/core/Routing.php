@@ -5,60 +5,42 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-
-
 use src\app\controller\CourseController;
 
-class Routing{
-
-    public function start():void{
-
+class Routing
+{
+    public function start(): void
+    {
         $routes = new RouteCollection();
 
-        $routes->add('admin', new Route('/admin',[
-            '_controller'   => CourseController::class,
-            '_method'       => 'adminSite', 
-        ], 
-        methods:['GET', 'POST'] //wenn adminSite formulare absendet auch POST
-        ));
+        $routes->add('admin', new Route('/admin', [
+            '_controller' => [CourseController::class, 'adminSite']
+        ], methods: ['GET', 'POST']));
         
-        $context = new RequestContext();
-        $context->setMethod($_SERVER['REQUEST_METHOD']);
+        $routes->add('login', new Route('/login', [
+            '_controller' => [Auth::class, 'login']
+        ], methods: ['GET', 'POST']));
 
-        $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        
 
-        $basePaths = [
-            '/course_management/public/index.php',
-            '/course_management/public'
-        ];
+        $currentPath = $_SERVER['PATH_INFO'] ?? '/';
 
-        foreach ($basePaths as $basePath) {
-            if (str_starts_with($currentPath, $basePath)) {
-                $currentPath = substr($currentPath, strlen($basePath)) ?: '/';
-                break;
-            }
-        }
-
+        $context = new RequestContext(method: $_SERVER['REQUEST_METHOD']);
         $matcher = new UrlMatcher($routes, $context);
+
         try {
             $parameters = $matcher->match($currentPath);
 
-            $controllerClass = $parameters['_controller'];
-            $methodName      = $parameters['_method'];
+            [$controllerClass, $methodName] = $parameters['_controller'];
+            unset($parameters['_controller'], $parameters['_route']);
 
-            unset($parameters['_controller'], $parameters['_method'], $parameters['_route']);
+            echo (new $controllerClass())->$methodName(...$parameters);
 
-            $controller = new $controllerClass();
-            $controller->$methodName(...$parameters);
-
-        } catch (ResourceNotFoundException $e) {
+        } catch (\Exception $e) {
             http_response_code(404);
             echo "404 - Seite nicht gefunden";
-        } catch (MethodNotAllowedException $e) {
-            http_response_code(405);
-            echo "405 - Methode nicht erlaubt";
+            echo "Fehler: " . $e->getMessage();
+
         }
     }
 }

@@ -1,4 +1,6 @@
 <?php
 namespace config;
 
-use 
+class Routes{
+    
+}
