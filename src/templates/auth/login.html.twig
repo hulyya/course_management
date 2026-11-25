@@ -5,7 +5,7 @@
             <h2>Login:</h2>
         </div>
         <div>
-            <form method="POST">
+            <form method="POST" action="/course_management/public/index.php/admin/course">
                 E-Mail: <input type="text" name="email" value="{{data.email ?? ''}}"><br>
                 Password: <input type="password" name="password" value="{{data.password ?? ''}}">
                 <input type="submit">

@@ -1,0 +1,54 @@
+<html>
+    <body>
+        <div>
+            <h2>Alle Kurse:</h2>
+            <table>
+                <tbody>
+                    {% for course in data %}
+                        <tr>
+                            <th>Titel:</th>
+                            <td>{{ course.title }}</td>
+                            <th>Beschreibung:</th>
+                            <td>{{ course.description }}</td>
+                            <th>Status:</th>
+                            <td colspan="9">{{ course.state ? 'Aktiv' : 'Inaktiv' }}</td>
+                            <th>Aktionen:</th>
+                            <td colspan="7">
+                                <a href="course/edit/{{ course.id }}">
+                                    <button type="button">Bearbeiten</button>
+                                </a>
+                                <form action="course/delete" method="post" onsubmit="return confirm('Kurs wirklich löschen?');">
+                                    <input type="hidden" name="delete_id" value="{{ course.id }}">
+                                    <button type="submit">Löschen</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {% for session in course.courseSessions %}
+                            <tr>
+                                <th>Startzeit:</th>
+                                <td>{{ session.startTime|date('d.m.Y H:i') }}</td>
+                                <th>Endzeit:</th>
+                                <td>{{ session.endTime|date('d.m.Y H:i') }}</td>
+                                <th>Trainer:</th>
+                                <td>{{ session.trainer.firstname }} {{ session.trainer.lastname }}</td>
+                                <th>Raum:</th>
+                                <td>{{ session.location.room }}</td>
+                                <th>Straße:</th>
+                                <td>{{ session.location.street }}</td>
+                                <th>Stadt:</th>
+                                <td>{{ session.location.city }}</td>
+                                <th>Raumkapazität:</th>
+                                <td>{{ session.location.capacity }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="14">Keine Sessions für diesen Kurs vorhanden.</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

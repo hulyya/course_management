@@ -16,13 +16,25 @@ class Routing{
         
         $routes = new RouteCollection();
 
-        $routes->add('admin', new Route('/admin', [
-            '_controller' => [CourseController::class, 'adminSite']
-        ], methods: ['GET', 'POST']));
-        
         $routes->add('login', new Route('/login', [
             '_controller' => [Auth::class, 'login']
         ], methods: ['GET', 'POST']));
+        // in routes.php werfen
+        $routes->add('admin/course', new Route('/admin/course', [
+            '_controller' => [CourseController::class, 'adminListCourseSite']
+        ], methods: ['GET', 'POST']));
+        
+        $routes->add('admin/course/delete', new Route('/admin/course/delete', [
+            '_controller' => [CourseController::class, 'deleteCourse']
+        ], methods: ['GET', 'POST']));
+
+        
+        
+        $routes->add('admin/course/edit', new Route('/admin/course/edit{id}', [
+        '_controller' => [CourseController::class, 'adminCourseSite']
+        ], methods: ['GET', 'POST']));
+
+        
 
         
 

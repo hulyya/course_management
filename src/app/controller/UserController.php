@@ -6,18 +6,31 @@ use src\app\repository\CompanyRepository;
 use src\app\repository\UserRepository;
 
 class UserController{
+    
+    /**
+     * Summary of adminUserSite
+     */
+    public function adminUserSite(){
+
+    }
+
+    /**
+     * Summary of trainerUserSite
+     */
+    public function trainerUserSite(){
+
+    }
+
 
     /**
      * Summary of createUser
      * create a new user 
      */
-    public function createUser():array{
+    public function createUser(Request $request):array{
         $companyRepo = new CompanyRepository();
         $userRepo = new UserRepository();
-
         $companies = $companyRepo->getAllCompanies();
         $roles =$userRepo->getAllRoles();
-
         $formData = [
             'firstname'     => '',
             'lastname'      => '',
@@ -29,13 +42,13 @@ class UserController{
             'companies'     => $companies
         ];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $firstname  =   trim($_POST['firstname']??'');
-            $lastname   =   trim($_POST['lastname']??'');
-            $email      =   trim($_POST['email']??'');
-            $password   =   trim($_POST['password_hash']??'');
-            $role       =   ($_POST['role']??'');
-            $companyId  =   (int)($_POST['company']??0);
+        if ($request->isMethod('POST')) {
+            $firstname  =   trim($request->request->get('firstname'));
+            $lastname   =   trim($request->request->get('lastname'));
+            $email      =   trim($request->request->get('email'));
+            $password   =   trim($request->request->get('password'));
+            $role       =   $request->request->get('role');
+            $companyId  =   $request->request->get('company');
 
             $formData['firstname']      = $firstname;
             $formData['lastname']       = $lastname;
@@ -43,7 +56,7 @@ class UserController{
             $formData['password_hash']  = $password;
             $formData['role']           = $role;
             $formData['company']        = $companyId;
-            
+
             if ($firstname !== '' && $lastname !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) && $password !== '') {
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
                 $companyObj   = $companyRepo->getCompanyById($companyId);
@@ -55,8 +68,6 @@ class UserController{
         }
         return $formData;
     }
-
-
 
     /**
      * Summary of editUser
@@ -121,8 +132,6 @@ class UserController{
         return false;
     }
 
-
-
     /**
      * Summary of changeUserState
     */
@@ -130,8 +139,6 @@ class UserController{
 
 
     }
-
-
 
     /**
      * Summary of listAllUsers

@@ -1,92 +1,55 @@
 <?php
 namespace src\app\controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use src\app\model\Location;
 use src\app\repository\LocationRepository;
 
 class LocationController{
 
     /**
-     * Summary of createLocation
+     * Summary of adminLocationSite
      */
-    public function createLocation(){
-        $formData = [
-            'name'      => '',
-            'street'    => '',
-            'city'      => '',
-            'room'      => '',
-            'capacity'  => '',
-        ];
+    public function adminLocatonSite(){
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $name       =   trim($_POST['name']??'');
-            $street     =   trim($_POST['street']??'');
-            $city       =   trim($_POST['city']??'');
-            $room       =   trim($_POST['room']??'');
-            $capacity   =   trim($_POST['capacity']??'');
-
-            $formData['name']       = $name;
-            $formData['street']     = $street;
-            $formData['city']       = $city;
-            $formData['room']       = $room;
-            $formData['capacity']   = $capacity;
-
-            $location = new Location(0, true, $name, $street, $city, $room, $capacity);
-            (new LocationRepository())->save($location);
-            return $formData;
-        }
-        return $formData;
     }
 
 
+    /**
+     * Summary of createLocation
+     */
+    public function createLocation(Request $request){
+            $name       =   trim($request->request->get('name'));
+            $street     =   trim($request->request->get('street'));
+            $city       =   trim($request->request->get('city'));
+            $room       =   trim($request->request->get('room'));
+            $capacity   =   trim($request->request->get('capacity'));
+
+            $location = new Location(0, true, $name, $street, $city, $room, $capacity);
+            return (new LocationRepository())->save($location);
+    }
 
     /**
      * Summary of editLocation
      */
-    public function editLocation(){
-        $formData = [
-            'name'      => '',
-            'street'    => '',
-            'city'      => '',
-            'room'      => '',
-            'capacity'  => '',
-        ];
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $id         =   (int) ($_POST['edit_id']??'');
-            $name       =   trim($_POST['name']??'');
-            $street     =   trim($_POST['street']??'');
-            $city       =   trim($_POST['city']??'');
-            $room       =   trim($_POST['room']??'');
-            $capacity   =   trim($_POST['capacity']??'');
-
-            $formData['name']       = $name;
-            $formData['street']     = $street;
-            $formData['city']       = $city;
-            $formData['room']       = $room;
-            $formData['capacity']   = $capacity;
+    public function editLocation(Request $request){
+            $id         =   (int) ($request->request->get('id'));
+            $name       =   trim($request->request->get('name'));
+            $street     =   trim($request->request->get('street'));
+            $city       =   trim($request->request->get('city'));
+            $room       =   trim($request->request->get('room'));
+            $capacity   =   trim($request->request->get('capacity'));
 
             $location = new Location($id, true, $name, $street, $city, $room, $capacity);
-            (new LocationRepository())->update($location);
-            return $formData;
-        }
-        return $formData;
+            return (new LocationRepository())->update($location);
     }
-
-
 
     /**
      * Summary of deleteLocation
      */
-    public function deleteLocation(){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])){
-            return (new LocationRepository())->delete((int) $_POST['delete_id']);
-        }
-        return false;
+    public function deleteLocation(Request $request){
+            return (new LocationRepository())->delete((int) ($request->request->get('delete_id')));
     }
-
-
-
 
     /**
      * Summary of changeLocationState
@@ -94,8 +57,6 @@ class LocationController{
     public function changeLocationState(){
 
     }
-
-
 
     /**
      * Summary of listAllLocations
@@ -108,11 +69,5 @@ class LocationController{
         }
         return $array;
     }
-
-
-
-
 }
-
-
 ?>

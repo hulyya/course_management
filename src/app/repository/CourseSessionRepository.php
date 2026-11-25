@@ -116,11 +116,11 @@ class CourseSessionRepository {
 
         return $stmt->execute([
             ':id'           => $courseSession->getId(),
-            ':start_time'   => $courseSession->getStartTime(),
-            ':end_time'     => $courseSession->getEndTime(),
-            ':location_id'  => $courseSession->getLocation(),
-            ':trainer_id'   => $courseSession->getTrainer(),
-            ':course_id'    => $courseSession->getCourse()
+            ':start_time'   => $courseSession->getStartTime()->format('Y-m-d H:i:s'),
+            ':end_time'     => $courseSession->getEndTime()->format('Y-m-d H:i:s'),
+            ':location_id'  => $courseSession->getLocation()->getId(),
+            ':trainer_id'   => $courseSession->getTrainer()->getId(),
+            ':course_id'    => $courseSession->getCourse()->getId()
         ]);
     }
 

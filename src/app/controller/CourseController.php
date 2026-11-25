@@ -1,77 +1,85 @@
 <?php
 namespace src\app\controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use src\app\repository\CourseRepository;
 use src\app\model\Course;
+use src\app\repository\CourseSessionRepository;
+use src\app\model\CourseSession;
+use src\app\repository\LocationRepository;
+use src\app\repository\UserRepository;
+use src\app\view\admin\AdminCourse;
+use src\app\view\admin\AdminCourseSessionEdit;
+use DateTime;
 
 class CourseController {
+     
+    public function adminListCourseSite():Response{
+        $courses = $this->listAllCourses();
+        $view = new AdminCourse();
+        $view->setData($courses);
+        return new Response($view->render());
+    }
+    /**
+     * Summary of adminCourseSite
+     * @return Response
+     * Shows a page with editing choices for a Course
+     */
+    public function adminCourseSite(): Response{
+        $course = $this->editCourse();
+        $view = new AdminCourseSessionEdit(); 
+        return new Response($view->render());
+    }
+        
+    
     /**
      * Summary of createCourse()
      * creates one course
      */
-    public function createCourse() {
-        $formData = [];
+    public function createCourse(Request $request) {
+        $title       = trim($request->request->get('title', ''));
+        $description = trim($request->request->get('description', ''));
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $title          = trim($_POST['title']??'');
-            $description    = trim($_POST['description']??'');
-
-            $formData = [
-                'title'         => $title,
-                'description'   => $description
-            ];      
-
-            $course = new Course(0, $title, $description, true, []);
-            return (new CourseRepository())->save($course);
-        }
-        return $formData;
+        $course = new Course(0, $title, $description, true, []);
+        (new CourseRepository())->save($course);
+        return new RedirectResponse('/course_management/public/index.php/admin');
     }
-
 
     /**
      * Summary of editCourse()
-     * posibility to change Values in a Course
+     * possibility to change Values in a Course
      */
-    public function editCourse():bool{
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
-            $id          = (int) $_POST['edit_id'];
-            $title       = trim($_POST['title'] ?? '');
-            $description = trim($_POST['description'] ?? '');
-
+    public function editCourse(Request $request):bool{
+            $id          = (int) ($request->request->get('edit_id'));
+            $title       = trim($request->request->get('title'));
+            $description = trim($request->request->get('description'));
+            
             $course = new Course($id, $title, $description, true, []);
             return (new CourseRepository())->update($course);
-        }
-        return false;
     }
-
-
 
     /**
      * Summary of deleteCourse()
      * deletes a course
      */
-    public function deleteCourse():bool{
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            return (new CourseRepository())->delete((int) $_POST['delete_id']);
-        }
-        return false;
+    public function deleteCourse(Request $request):Response{
+            (new CourseRepository())->delete((int) ($request->request->get('delete_id')));
+            return new RedirectResponse('/admin/course');
     }
-
-
 
     /**
      * Summary of listAllCourses
      * lists all Courses from the database
      */
     public function listAllCourses(){
-        $courseRepositoryObject = (new CourseRepository())->load();
-        $array = [];
-        foreach ($courseRepositoryObject as $data ){
-            $array [] = $data->toArray();
+        $courseList = (new CourseRepository())->load();
+        foreach ($courseList as $course ){
+            $sessionList = $this->listAllSessions($course->getId());
+            $course->setCourseSessions($sessionList);
         }
-        return $array;
+        return $courseList;
     }
-
-
 
     /**
      * Summary of showCourse
@@ -79,13 +87,125 @@ class CourseController {
      */
     public function showCourse(int $id){
         $courseRepositoryObject = (new CourseRepository())->getCourseById($id);
-        $courseArray = $courseRepositoryObject->toArray();
-        return $courseArray;
+        return $courseRepositoryObject;
     }
 
+    /**
+     * Summary of createSession
+     * @param Request $request
+     * @return array{"end_time": string, location: int, locations: array, "start_time": string, trainer: int, trainers: array}
+     */
+    public function createSession(Request $request){
+        $trainers = (new UserRepository())->getAllTrainer();
+        $locations = (new LocationRepository())->getAllLocations();
+        $formData = [
+            'start_time' => '',
+            'end_time'   => '',
+            'trainer'    => 0,
+            'location'   => 0,
+            'trainers'   => $trainers,
+            'locations'  => $locations
+        ];
+        if ($request->isMethod('POST')) {
+            $start_time = trim($request->request->get('start_time'));
+            $end_time   = trim($request->request->get('end_time'));
+            $trainer    = $request->request->getInt('trainer');
+            $location   = $request->request->getInt('location');
+            $courseId   = $request->request->getInt('courseId');
+            
+            $formData['start_time'] = $start_time;
+            $formData['end_time']   = $end_time;
+            $formData['trainer']    = $trainer;
+            $formData['location']   = $location;
+
+            $id          = 0;
+            $startObj    = new \DateTime($start_time);
+            $endObj      = new \DateTime($end_time);
+            $trainerObj  = (new UserRepository())->getUserById($trainer);
+            $locationObj = (new LocationRepository())->getLocationById($location);
+            $courseObj   = (new CourseRepository())->getCourseById($courseId);
+
+            $session = new CourseSession($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
+            (new CourseSessionRepository())->save($session);
+        }
+        return $formData;
+    }
+
+    /**
+     * Summmary of editSession
+     */
+    public function editSession(Request $request): array {
+        $trainers  = (new UserRepository())->getAllTrainer();
+        $locations = (new LocationRepository())->getAllLocations();
+
+        $formData = [
+            'id'         => 0,
+            'start_time' => '',
+            'end_time'   => '',
+            'trainer'    => 0,
+            'location'   => 0,
+            'courseId'   => 0,
+            'trainers'   => $trainers,
+            'locations'  => $locations,
+        ];
+
+        if ($request->isMethod('POST') && $request->request->has('edit_id')) {
+            $id         = (int) ($request->request->get('edit_id'));
+            $start_time = trim($request->request->get('start_time'));
+            $end_time   = trim($request->request->get('end_time'));
+            $trainer    = $request->request->getInt('trainer');
+            $location   = $request->request->getInt('location');
+            $courseId   = $request->request->getInt('courseId');
+
+            $formData['id']         = $id;
+            $formData['start_time'] = $start_time;
+            $formData['end_time']   = $end_time;    
+            $formData['trainer']    = $trainer;
+            $formData['location']   = $location;
+            $formData['courseId']   = $courseId;
+
+            $startObj    = new \DateTime($start_time);
+            $endObj      = new \DateTime($end_time);
+            $trainerObj  = (new UserRepository())->getUserById($trainer);
+            $locationObj = (new LocationRepository())->getLocationById($location);
+            $courseObj   = (new CourseRepository())->getCourseById($courseId);
+
+            $session = new CourseSession($id, $startObj, $endObj, $trainerObj, $locationObj, $courseObj);
+            (new CourseSessionRepository())->update($session);
+        }
+        return $formData;
+    }
+
+    /**
+     * Summary of deleteSession
+     */
+    public function deleteSession(Request $request){
+            return (new CourseSessionRepository())->delete((int) ($request->request->get('delete_id')));
+
+    }
+
+    /**
+     * Summary of listAllSessions
+     */
+    public function listAllSessions(int $courseId): array{
+        $sessionList = (new CourseSessionRepository())->load($courseId);
+        return $sessionList;
+    }
     
-    public function adminSite(){
-        echo "Hello World!";
+    /**
+     * Summary of listAllOldSessions
+     */
+    public function listAllOldSessions(){
+        $currentTime = new DateTime('today');
+    }
+    
+    /**
+     * Summary of listAllTrainerSessions
+     * shows all sessions from on trainer /???????
+     */
+    public function listAllTrainerSessions(int $trainerId){
+        $trainerSessionList = (new CourseRepository())->loadAllTrainerSessions($trainerId);
+        return $trainerSessionList;
     }
 }
 ?>

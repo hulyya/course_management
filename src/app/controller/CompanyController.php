@@ -1,68 +1,45 @@
 <?php
 namespace src\app\controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use src\app\model\Company;
 use src\app\repository\CompanyRepository;
 
 class CompanyController{
+    
+    /**
+     * Summary of adminCompanySite
+     */
+    public function adminCompanySite(){
+
+    }
+
+
     /**
      * Summary of createCompany
      * create a new Company
      */
-    public function createCompany(){
-
-        $formData = [
-            'name'              =>'',
-            'contact_person'    =>'',
-            'contact_email'     =>''
-        ];
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $name           =   trim($_POST['name']??'');
-            $contact_person =   trim($_POST['contact_person']??'');
-            $contact_email  =   trim($_POST['contact_email']??'');
-
-            $formData['name']           =   $name;
-            $formData['contact_person'] =   $contact_person;
-            $formData['contact_email']  =   $contact_email;
+    public function createCompany(Request $request){
+            $name           =   trim($request->request->get('name'));
+            $contact_person =   trim($request->request->get('contact_person'));
+            $contact_email  =   trim($request->request->get('contact_email'));
 
             $company = new Company(0, true, $name, $contact_person, $contact_email);
-            (new CompanyRepository())->save($company);
-            return $formData;
-        }
-        return $formData;
+            return (new CompanyRepository())->save($company);
     }
-
-
 
     /**
      * Summary of editCompany
      */
-    public function editCompany(){
-         $formData = [
-            'name'              =>'',
-            'contact_person'    =>'',
-            'contact_email'     =>''
-        ];
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $id             =   trim($_POST['id']??'');
-            $name           =   trim($_POST['name']??'');
-            $contact_person =   trim($_POST['contact_person']??'');
-            $contact_email  =   trim($_POST['contact_email']??'');
-
-            $formData['name']           =   $name;
-            $formData['contact_person'] =   $contact_person;
-            $formData['contact_email']  =   $contact_email;
+    public function editCompany(Request $request){
+            $id             =   trim($request->request->get('id'));
+            $name           =   trim($request->request->get('name'));
+            $contact_person =   trim($request->request->get('contact_person'));
+            $contact_email  =   trim($request->request->get('contact_email'));
 
             $company = new Company($id, true, $name, $contact_person, $contact_email);
-            (new CompanyRepository())->update($company);
-            return $formData;
-        }
-        return $formData;
+            return (new CompanyRepository())->update($company);
     }
-
-
 
     /**
      * Summary of changeCompanyState
@@ -71,22 +48,16 @@ class CompanyController{
 
     }
 
-
-
     /**
      * Summary of listAllCompanies
      */
     public function listAllCompanies(){
         $companyRepositoryObj = (new CompanyRepository()->load());
         $array = [];
-
         foreach ($companyRepositoryObj as $data){
             $array [] = $data->toArray();
         }
         return $array;
-
     }
-
-
 }
 ?>
