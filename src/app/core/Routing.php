@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use src\app\controller\CourseController;
+use src\app\controller\UserController;
 
 class Routing{
     public function start(Request $request):Response{
@@ -37,7 +38,12 @@ class Routing{
         $routes->add('admin/course/edit/save', new Route('/admin/course/save/{id}', [
         '_controller' => [CourseController::class, 'adminCourseSite']
         ], methods: ['POST']));
+
+
         
+        $routes->add('admin/user', new Route('/admin/user', [
+        '_controller' => [UserController::class, 'adminUserSite']
+        ], methods: ['GET', 'POST']));
 
         
 

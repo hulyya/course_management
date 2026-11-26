@@ -1,64 +1,67 @@
-<html>
-    <body>
+{% extends 'base.html.twig' %}
+
+{% block title %}Kursbearbearbeitung{% endblock %}
+
+{% block body %} 
+    <div>
         <div>
-            <div>
-                <h2>Kurs bearbeiten: </h2>
+            <h2>Kurs bearbeiten: </h2>
 
-                <form method="POST">
-                    
-                    <label>Titel:</label>
-                    <input type="text" name="title" value="{{ data.course.title }}">
-                    <label>Beschreibung:</label>
-                    <input type="text" name="description" value="{{ data.course.description }}">
-                    <label>Status:</label>
-                    <input type="checkbox">
+            <form method="POST">
                 
-                </form>
-            </div>
+                <label>Titel:</label>
+                <input type="text" name="title" value="{{ data.course.title }}">
+                <label>Beschreibung:</label>
+                <input type="text" name="description" value="{{ data.course.description }}">
+                <label>Status:</label>
+                <input type="checkbox">
             
-            <div>
-                {% if data.session is empty %}
-
-                    <p>Für diesen Kurs gibt es in der Datenbank noch keine Sessions.</p>
-                    <button>Session erstellen</button>
-
-                {% else %}
-
-                {%  for session in data.session %}
-
-                <h2>Sessions bearbeiten: </h2>
-
-                <form>
-
-                    <label>Startzeit:</label>
-                    <input type="datetime-local" name="start_time" value="{{ session.startTime|date('d.m.Y H:i') }}">
-                    <label>Endzeit:</label>
-                    <input type="datetime-local" name="end_time" value="{{ session.endTime|date('d.m.Y H:i') }}">
-                    
-                    <label>Trainer:</label>
-                    <select name="trainer_id">
-                        <option value="{{ session.trainer.id }}">
-                            {{ session.trainer.firstname }} {{ session.trainer.lastname }}
-                        </option>
-                    </select>
-                    <label>Ort:</label>
-                    <select name="trainer_id">
-                        <option value="{{ session.location.id }}">
-                            {{ session.location.name }} 
-                        </option>
-                    </select>
-
-                </form>
-
-
-                {%  endfor %}
-                {% endif %}
-            </div>
-
-            <div>
-                <button>Session hinzufügen</button>
-            </div>
-            
+            </form>
         </div>
-    </body>
-</html>
+        
+        <div>
+            {% if data.session is empty %}
+
+                <p>Für diesen Kurs gibt es in der Datenbank noch keine Sessions.</p>
+                <button>Session erstellen</button>
+
+            {% else %}
+
+            {%  for session in data.session %}
+
+            <h2>Sessions bearbeiten: </h2>
+
+            <form>
+
+                <label>Startzeit:</label>
+                <input type="datetime-local" name="start_time" value="{{ session.startTime|date('d.m.Y H:i') }}">
+                <label>Endzeit:</label>
+                <input type="datetime-local" name="end_time" value="{{ session.endTime|date('d.m.Y H:i') }}">
+                
+                <label>Trainer:</label>
+                <select name="trainer_id">
+                    <option value="{{ session.trainer.id }}">
+                        {{ session.trainer.firstname }} {{ session.trainer.lastname }}
+                    </option>
+                </select>
+                <label>Ort:</label>
+                <select name="trainer_id">
+                    <option value="{{ session.location.id }}">
+                        {{ session.location.name }} 
+                    </option>
+                </select>
+
+            </form>
+
+
+            {%  endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            <button>Session hinzufügen</button>
+        </div>
+        
+    </div>
+
+{% endblock %}

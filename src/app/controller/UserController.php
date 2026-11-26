@@ -1,6 +1,8 @@
 <?php
 namespace src\app\controller;
 
+use src\app\view\admin\AdminUser;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use src\app\model\User;
 use src\app\repository\CompanyRepository;
@@ -11,8 +13,11 @@ class UserController{
     /**
      * Summary of adminUserSite
      */
-    public function adminUserSite(){
-
+    public function adminUserSite():Response{
+        $user = $this->listAllUsers();
+        $view = new AdminUser();
+        $view->setData($user);
+        return new Response($view->render());
     }
 
     /**

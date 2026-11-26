@@ -1,8 +1,14 @@
-<html>
-    <body>
-        <div>
-            <h2>Alle Kurse:</h2>
-            <table>
+{% extends 'base.html.twig' %}
+
+{% block title %}Kursverwaltung{% endblock %}
+
+{% block body %}    
+    <div>
+        <h2>Alle Kurse:</h2>
+    </div>
+
+    <div>
+        <table>
                 <tbody>
                     {% for course in data %}
 
@@ -51,10 +57,10 @@
                             </tr>
 
                         {% endfor %}
-                        
+
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
-    </body>
-</html>
+    </div>
+
+{% endblock %}
