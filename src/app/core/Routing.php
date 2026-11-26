@@ -24,16 +24,19 @@ class Routing{
             '_controller' => [CourseController::class, 'adminListCourseSite']
         ], methods: ['GET', 'POST']));
         
-        $routes->add('admin/course/delete', new Route('/admin/course/delete', [
+        $routes->add('admin/course/delete', new Route('/admin/course/delete/{id}', [
             '_controller' => [CourseController::class, 'deleteCourse']
         ], methods: ['GET', 'POST']));
 
         
         
-        $routes->add('admin/course/edit', new Route('/admin/course/edit{id}', [
+        $routes->add('admin/course/edit', new Route('/admin/course/edit/{id}', [
         '_controller' => [CourseController::class, 'adminCourseSite']
-        ], methods: ['GET', 'POST']));
+        ], methods: ['GET']));
 
+        $routes->add('admin/course/edit/save', new Route('/admin/course/save/{id}', [
+        '_controller' => [CourseController::class, 'adminCourseSite']
+        ], methods: ['POST']));
         
 
         

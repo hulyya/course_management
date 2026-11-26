@@ -52,12 +52,8 @@ class CompanyController{
      * Summary of listAllCompanies
      */
     public function listAllCompanies(){
-        $companyRepositoryObj = (new CompanyRepository()->load());
-        $array = [];
-        foreach ($companyRepositoryObj as $data){
-            $array [] = $data->toArray();
-        }
-        return $array;
+        $companyList = (new CompanyRepository()->load());
+        return $companyList;
     }
 }
 ?>

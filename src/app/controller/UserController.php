@@ -1,6 +1,7 @@
 <?php
 namespace src\app\controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use src\app\model\User;
 use src\app\repository\CompanyRepository;
 use src\app\repository\UserRepository;
@@ -125,11 +126,8 @@ class UserController{
      * Users should not be deleted 
      * deleteUser function is only for testing
      */
-    public function deleteUser(){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            return (new UserRepository())->delete((int) $_POST['delete_id']);
-        }
-        return false;
+    public function deleteUser(Request $request){
+            return (new UserRepository())->delete((int) ($request->request->get('delete_id')));
     }
 
     /**
@@ -143,13 +141,9 @@ class UserController{
     /**
      * Summary of listAllUsers
      */
-    public function listAllUsers():array{
-        $userRepositoryObj = (new UserRepository())->load();
-        $array = [];
-        foreach ($userRepositoryObj as $data){
-            $array [] = $data->toArray();
-        }
-        return $array;
+    public function listAllUsers(){
+        $userList = (new UserRepository())->load();
+        return $userList;
     }
 
 

@@ -14,21 +14,32 @@ use src\app\view\admin\AdminCourseSessionEdit;
 use DateTime;
 
 class CourseController {
-     
+    /**
+     * Summary of adminListCourseSite
+     * @return Response
+     * Shows a page with all Courses and Sessions
+     */
     public function adminListCourseSite():Response{
         $courses = $this->listAllCourses();
         $view = new AdminCourse();
         $view->setData($courses);
         return new Response($view->render());
     }
+
     /**
      * Summary of adminCourseSite
      * @return Response
      * Shows a page with editing choices for a Course
      */
-    public function adminCourseSite(): Response{
-        $course = $this->editCourse();
-        $view = new AdminCourseSessionEdit(); 
+    public function adminCourseSite($request, $id):Response{
+        $course = $this->showCourse($id);
+        $session = $this->listAllSessions($id);
+        $view = new AdminCourseSessionEdit();
+        $data = [
+            "course" => $course,
+            "session" => $session
+        ];
+        $view->setData($data); 
         return new Response($view->render());
     }
         
@@ -50,13 +61,14 @@ class CourseController {
      * Summary of editCourse()
      * possibility to change Values in a Course
      */
-    public function editCourse(Request $request):bool{
+    public function editCourse(Request $request){
             $id          = (int) ($request->request->get('edit_id'));
             $title       = trim($request->request->get('title'));
             $description = trim($request->request->get('description'));
             
             $course = new Course($id, $title, $description, true, []);
-            return (new CourseRepository())->update($course);
+            (new CourseRepository())->update($course);
+            return new RedirectResponse('/course_management/public/index.php/admin/course/{id}');
     }
 
     /**
@@ -72,7 +84,7 @@ class CourseController {
      * Summary of listAllCourses
      * lists all Courses from the database
      */
-    public function listAllCourses(){
+    private function listAllCourses(){
         $courseList = (new CourseRepository())->load();
         foreach ($courseList as $course ){
             $sessionList = $this->listAllSessions($course->getId());
@@ -186,6 +198,7 @@ class CourseController {
 
     /**
      * Summary of listAllSessions
+     * @return array 
      */
     public function listAllSessions(int $courseId): array{
         $sessionList = (new CourseSessionRepository())->load($courseId);
@@ -196,15 +209,14 @@ class CourseController {
      * Summary of listAllOldSessions
      */
     public function listAllOldSessions(){
-        $currentTime = new DateTime('today');
     }
     
     /**
      * Summary of listAllTrainerSessions
-     * shows all sessions from on trainer /???????
+     * shows all trainer sessions  /???????
      */
     public function listAllTrainerSessions(int $trainerId){
-        $trainerSessionList = (new CourseRepository())->loadAllTrainerSessions($trainerId);
+        $trainerSessionList = (new CourseSessionRepository())->loadAllTrainerSessions($trainerId);
         return $trainerSessionList;
     }
 }

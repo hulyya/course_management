@@ -62,12 +62,8 @@ class LocationController{
      * Summary of listAllLocations
      */
     public function listAllLocations(){
-        $locationRepositoryObj = (new LocationRepository())->load();
-        $array = [];
-        foreach ($locationRepositoryObj as $data){
-            $array [] = $data->toArray();
-        }
-        return $array;
+        $locationList = (new LocationRepository())->load();
+        return $locationList;
     }
 }
 ?>

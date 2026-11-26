@@ -5,6 +5,7 @@
             <table>
                 <tbody>
                     {% for course in data %}
+
                         <tr>
                             <th>Titel:</th>
                             <td>{{ course.title }}</td>
@@ -25,6 +26,7 @@
                         </tr>
 
                         {% for session in course.courseSessions %}
+
                             <tr>
                                 <th>Startzeit:</th>
                                 <td>{{ session.startTime|date('d.m.Y H:i') }}</td>
@@ -41,11 +43,15 @@
                                 <th>Raumkapazität:</th>
                                 <td>{{ session.location.capacity }}</td>
                             </tr>
+
                         {% else %}
+
                             <tr>
                                 <td colspan="14">Keine Sessions für diesen Kurs vorhanden.</td>
                             </tr>
+
                         {% endfor %}
+                        
                     {% endfor %}
                 </tbody>
             </table>
