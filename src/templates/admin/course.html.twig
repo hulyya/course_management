@@ -2,7 +2,8 @@
 
 {% block title %}Kursverwaltung{% endblock %}
 
-{% block body %}    
+{% block body %}  
+
     <div>
         <h2>Alle Kurse:</h2>
     </div>
@@ -18,9 +19,9 @@
                             <th>Beschreibung:</th>
                             <td>{{ course.description }}</td>
                             <th>Status:</th>
-                            <td colspan="9">{{ course.state ? 'Aktiv' : 'Inaktiv' }}</td>
+                            <td>{{ course.state ? 'Aktiv' : 'Inaktiv' }}</td>
                             <th>Aktionen:</th>
-                            <td colspan="7">
+                            <td>
                                 <a href="course/edit/{{ course.id }}">
                                     <button type="button">Bearbeiten</button>
                                 </a>
@@ -53,7 +54,7 @@
                         {% else %}
 
                             <tr>
-                                <td colspan="14">Keine Sessions für diesen Kurs vorhanden.</td>
+                                <td>Keine Sessions für diesen Kurs vorhanden.</td>
                             </tr>
 
                         {% endfor %}

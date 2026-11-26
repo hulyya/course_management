@@ -20,7 +20,9 @@ class Routing{
         $routes->add('login', new Route('/login', [
             '_controller' => [Auth::class, 'login']
         ], methods: ['GET', 'POST']));
+
         // in routes.php werfen
+        //COURSE AND SESSION
         $routes->add('admin/course', new Route('/admin/course', [
             '_controller' => [CourseController::class, 'adminListCourseSite']
         ], methods: ['GET', 'POST']));
@@ -40,10 +42,20 @@ class Routing{
         ], methods: ['POST']));
 
 
-        
+        //USER
         $routes->add('admin/user', new Route('/admin/user', [
         '_controller' => [UserController::class, 'adminUserSite']
         ], methods: ['GET', 'POST']));
+
+        $routes->add('admin/user/delete', new Route('/admin/user/delete', [
+        '_controller' => [UserController::class, 'deleteUser']
+        ], methods: ['POST']));
+
+
+        $routes->add('admin/user/edit', new Route('/admin/user/edit/{id}', [
+        '_controller' => [UserController::class, 'adminUserSite']
+        ], methods: ['GET']));
+
 
         
 

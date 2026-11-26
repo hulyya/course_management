@@ -4,6 +4,36 @@
 
 {% block body %}
     <div>
-        <h2>Hallo</h2>
+        <table>
+            <tbody>
+                {% for user in data %}
+                    <tr>
+                        <th>Vorname:</th>
+                        <td>{{ user.firstname }}</td>
+                        <th>Nachname:</th>
+                        <td>{{ user.lastname }}</td>
+                        <th>E-Mail:</th>
+                        <td>{{ user.email }}</td>
+                        <th>Rolle:</th>
+                        <td>{{ user.role == 'admin' ? 'Admin' : (user.role == 'trainer' ? 'Trainer' : 'Employee') }}</td>
+                        <th>Firma:</th>
+                        <td>{{ user.company.name }}</td>
+                        <th>Status:</th>
+                        <td>{{ user.state ? 'Aktiv' : 'Inaktiv' }}</td>
+
+                        <th>Aktionen:</th>
+                        <td>
+                            <a href="user/edit/{{ user.id }}">
+                                <button type="button">Bearbeiten</button>
+                            </a>
+                            <form action="user/delete" method="post" onsubmit="return confirm('Benutzer wirklich löschen?')">
+                                <input type="hidden" name="delete_id" value="{{ user.id }}">
+                                <button type="submit">Löschen</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

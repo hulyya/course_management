@@ -2,6 +2,7 @@
 namespace src\app\controller;
 
 use src\app\view\admin\AdminUser;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use src\app\model\User;
@@ -131,8 +132,9 @@ class UserController{
      * Users should not be deleted 
      * deleteUser function is only for testing
      */
-    public function deleteUser(Request $request){
-            return (new UserRepository())->delete((int) ($request->request->get('delete_id')));
+    public function deleteUser(Request $request):Response{
+        (new UserRepository())->delete((int) ($request->request->get('delete_id')));
+        return new RedirectResponse('/admin/user');
     }
 
     /**

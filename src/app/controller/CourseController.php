@@ -31,7 +31,7 @@ class CourseController {
      * @return Response
      * Shows a page with editing choices for a Course
      */
-    public function adminCourseSite($request, $id):Response{
+    public function adminCourseSite(Request $request, $id):Response{
         $course = $this->showCourse($id);
         $session = $this->listAllSessions($id);
         $view = new AdminCourseSessionEdit();
